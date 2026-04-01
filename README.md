@@ -1,6 +1,8 @@
-# Standalone ATDD Test Repository
+# ATDD BMAD Template
 
 A decoupled, behavior-driven test repository for acceptance, API, integration, and prompt evaluation testing. Designed to be fed story specs from a separate codebase — one spec produces implementation code in the code repo, and BDD test artifacts in this repo.
+
+**[Living Documentation](https://agentifyhq.github.io/atdd-bmad-template/)** — Feature specifications with test results, auto-deployed to GitHub Pages.
 
 ## Architecture
 
@@ -30,7 +32,7 @@ Every layer uses **Gherkin feature files** as the single source of truth. Featur
 ### Prerequisites
 
 - Node.js >= 20
-- Python >= 3.11 (for DeepEval/Ragas prompt evaluation)
+- Python >= 3.11 (for DeepEval/Ragas prompt evaluation + living docs)
 - A running target application (for acceptance/API/integration tests)
 
 ### Setup
@@ -40,9 +42,9 @@ Every layer uses **Gherkin feature files** as the single source of truth. Featur
 npm install
 npx playwright install
 
-# Python dependencies (prompt evaluation)
+# Python dependencies (prompt evaluation + living docs)
 cd tests/prompt-eval/python
-pip install -e .
+pip install -e ".[docs]"
 cd ../../..
 
 # Environment — single .env file for all runners
@@ -86,11 +88,22 @@ npm run test:prompt-eval:all     # Both prompt eval layers
 npm run prompt:compare           # Side-by-side prompt/model comparison
 npm run prompt:compare:view      # View comparison in browser UI
 npm run prompt:redteam           # Security red-teaming
-
-# Reports
-npm run report                   # Playwright HTML report
-npm run report:cucumber          # Cucumber living documentation
 ```
+
+### Reports & Living Documentation
+
+```bash
+# Test reports
+npm run report                   # Playwright HTML report (reports/playwright/)
+npm run report:cucumber          # Cucumber report (reports/cucumber/)
+
+# Living documentation site
+npm run docs:serve               # Build + serve locally at http://127.0.0.1:8000
+npm run docs:deploy              # Build + deploy to GitHub Pages
+```
+
+All test output is consolidated under `reports/` (gitignored).
+Living docs site tooling lives in `spec-web/`.
 
 ## Documentation
 
@@ -104,30 +117,41 @@ npm run report:cucumber          # Cucumber living documentation
 ## Project Structure
 
 ```
-├── features/                          # Gherkin feature files (living docs source)
-│   ├── acceptance/                    # UI acceptance scenarios
-│   ├── api/                           # API contract scenarios
-│   ├── integration/                   # Cross-service scenarios
-│   └── prompt-eval/                   # Prompt quality specifications
-│       ├── summarization/             #   Summarization quality criteria
-│       ├── rag/                       #   RAG pipeline quality criteria
-│       └── safety/                    #   Safety guardrail criteria
-├── tests/
-│   ├── acceptance/steps/              # UI step definitions (page + request)
-│   ├── api/steps/                     # API step definitions (request only)
-│   ├── integration/steps/             # Integration step definitions
-│   └── prompt-eval/
-│       ├── ts-steps/                  # TS steps — promptfoo API (playwright-bdd)
-│       ├── python/                    # Python steps — DeepEval + Ragas (pytest-bdd)
-│       └── promptfoo/                 # Standalone: comparison & red-teaming
-│           ├── prompts/               #   Prompt templates (shared)
-│           └── datasets/              #   Test data (shared across TS & Python)
-├── support/
-│   ├── fixtures/                      # Composable Playwright fixtures
-│   ├── helpers/                       # Schema validators, utilities
-│   └── factories/                     # Test data factories
-├── playwright.config.ts               # Multi-project BDD configuration
-└── package.json                       # npm scripts for all layers
+features/                              # Gherkin feature files (the WHAT)
+├── acceptance/                        # UI acceptance scenarios
+├── api/                               # API contract scenarios
+├── integration/                       # Cross-service scenarios
+└── prompt-eval/                       # Prompt quality specifications
+    ├── summarization/                 #   Output quality criteria
+    ├── rag/                           #   RAG pipeline quality criteria
+    └── safety/                        #   Safety guardrail criteria
+
+tests/                                 # Step definitions (the HOW)
+├── acceptance/steps/                  # UI steps (page + request)
+├── api/steps/                         # API steps (request only)
+├── integration/steps/                 # Multi-service steps
+└── prompt-eval/
+    ├── ts-steps/                      # TS — promptfoo API (playwright-bdd)
+    ├── python/                        # Python — DeepEval + Ragas (pytest-bdd)
+    └── promptfoo/                     # Standalone: comparison & red-teaming
+        ├── prompts/                   #   Prompt templates (shared)
+        └── datasets/                  #   Test data (shared across TS & Python)
+
+support/                               # Shared test infrastructure
+├── fixtures/                          # Composable Playwright fixtures
+├── helpers/                           # Schema validators, utilities
+└── factories/                         # Test data factories
+
+spec-web/                              # Living documentation site
+├── mkdocs.yml                         # MkDocs Material configuration
+├── build-living-docs.py               # Generates pages from features + results
+└── overrides/stylesheets/             # Custom CSS
+
+reports/                               # All generated output (gitignored)
+├── .features-gen/                     # BDD → Playwright test files
+├── cucumber/                          # Cucumber HTML + JSON
+├── playwright/                        # Playwright HTML report
+└── test-results/                      # Screenshots, traces, videos
 ```
 
 ## Key Principle: What vs How
