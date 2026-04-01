@@ -1,4 +1,4 @@
-site_name: Test Architect — Living Documentation
+site_name: atdd-bmad-template — Living Documentation
 site_description: BDD feature specifications with test results
 site_url: ''
 docs_dir: site
@@ -31,12 +31,11 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.sections
-    - navigation.expand
     - navigation.path
     - navigation.indexes
-    - content.tabs.link
     - search.highlight
     - search.share
+    - toc.integrate
 
 extra_css:
   - stylesheets/living-docs.css

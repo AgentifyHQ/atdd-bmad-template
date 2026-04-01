@@ -131,14 +131,14 @@ def parse_feature_file(path: Path) -> Feature:
             feature.name = stripped[len("Feature:"):].strip()
             feature.tags = pending_tags
             pending_tags = []
-            # Collect description lines
+            # Collect description lines (skip comments)
             desc_lines = []
             i += 1
             while i < len(lines):
                 next_stripped = lines[i].strip()
                 if next_stripped.startswith(("Scenario", "Background", "@", "Rule:")):
                     break
-                if next_stripped:
+                if next_stripped and not next_stripped.startswith("#"):
                     desc_lines.append(next_stripped)
                 i += 1
             feature.description = "\n".join(desc_lines)
@@ -208,7 +208,15 @@ def load_cucumber_results(report_path: Path) -> dict[str, Feature]:
 
 
 def merge_results(feature: Feature, elements: list[dict]) -> None:
-    """Merge cucumber JSON results into a parsed Feature."""
+    """Merge cucumber JSON results into a parsed Feature.
+
+    Cucumber JSON embeds background steps inside each scenario's steps array.
+    We need to skip those when matching against our parsed scenario steps
+    (which don't include background steps).
+    """
+    # Count background steps so we can skip them in result arrays
+    bg_step_count = len(feature.background.steps) if feature.background else 0
+
     # Build lookup: scenario name -> list of result elements
     result_map: dict[str, list[dict]] = {}
     for elem in elements:
@@ -226,9 +234,12 @@ def merge_results(feature: Feature, elements: list[dict]) -> None:
         elem = matches.pop(0)
         result_steps = elem.get("steps", [])
 
+        # Skip background steps that cucumber embeds at the start
+        scenario_result_steps = result_steps[bg_step_count:]
+
         for i, step in enumerate(scenario.steps):
-            if i < len(result_steps):
-                rs = result_steps[i]
+            if i < len(scenario_result_steps):
+                rs = scenario_result_steps[i]
                 result = rs.get("result", {})
                 step.status = result.get("status", "")
                 step.duration_ms = result.get("duration", 0) / 1_000_000
@@ -316,37 +327,104 @@ def render_scenario(scenario: Scenario) -> str:
     return html
 
 
+def _step_status_indicator(step: Step) -> str:
+    """No icons — return empty string."""
+    return ""
+
+
+def _step_duration_badge(step: Step) -> str:
+    """Duration badge for step summary line."""
+    if step.duration_ms > 0:
+        return f'<span class="step-duration">{step.duration_ms:.0f}ms</span>'
+    return ""
+
+
+def _render_step_body(step: Step) -> str:
+    """Render the expanded content of a step — test output, docstrings, tables, errors."""
+    html = '<div class="step-body">\n'
+
+    # Test output info
+    if step.status:
+        html += '<div class="step-test-output">\n'
+        status_label = step.status.upper()
+        html += f'<span class="step-result-label step-result-{step.status}">{status_label}</span>'
+        if step.duration_ms > 0:
+            html += f' &nbsp; <span class="step-result-duration">{step.duration_ms:.0f}ms</span>'
+        html += '\n</div>\n'
+
+    # DocString content
+    if step.doc_string:
+        html += f'<div class="step-docstring"><pre>{_escape(step.doc_string)}</pre></div>\n'
+
+    # Data table
+    if step.data_table:
+        html += '<div class="step-datatable"><table>\n'
+        for row_i, row in enumerate(step.data_table):
+            tag = "th" if row_i == 0 else "td"
+            html += "<tr>" + "".join(f"<{tag}>{_escape(c)}</{tag}>" for c in row) + "</tr>\n"
+        html += '</table></div>\n'
+
+    # Error message
+    if step.error_message:
+        html += '<div class="step-error-detail">\n'
+        html += f'<pre>{_escape(step.error_message.strip())}</pre>\n'
+        html += '</div>\n'
+
+    # Empty state — no test results yet
+    if not step.status and not step.doc_string and not step.data_table:
+        html += '<div class="step-no-output">No test results available</div>\n'
+
+    html += '</div>\n'
+    return html
+
+
 def render_feature_tab(feature: Feature) -> str:
-    """Render the Feature (spec) tab — clean Gherkin, no results."""
-    lines = []
+    """Render the feature spec — nested collapsibles: scenario > step > output."""
+    html = ""
+
+    # Description as user story — split into lines on As a / I want / So that
     if feature.description:
-        lines.append(f"*{feature.description}*\n")
+        desc = feature.description
+        # Break into multiline user story format
+        desc = re.sub(r'\s+(I want\b)', r'\n\1', desc)
+        desc = re.sub(r'\s+(So that\b)', r'\n\1', desc)
+        html += f'<div class="feature-description">{_escape(desc)}</div>\n\n'
 
+    # Background (always visible, not collapsible)
     if feature.background:
-        lines.append("**Background:**\n")
-        lines.append("```gherkin")
+        html += '<div class="background-block">\n'
+        html += "<strong>Background:</strong>\n"
+        html += '<div class="background-steps">\n'
         for step in feature.background.steps:
-            lines.append(f"  {step.keyword} {step.text}")
-        lines.append("```\n")
+            html += f'<div class="step-line"><span class="step-keyword">{step.keyword}</span> {_escape(step.text)}</div>\n'
+        html += '</div>\n</div>\n\n'
 
+    # Each scenario is a collapsible <details> block
     for scenario in feature.scenarios:
-        tags_str = " ".join(scenario.tags) if scenario.tags else ""
-        lines.append(f"**Scenario: {scenario.name}**")
-        if tags_str:
-            lines.append(f"  `{tags_str}`\n")
-        lines.append("```gherkin")
-        for step in scenario.steps:
-            lines.append(f"  {step.keyword} {step.text}")
-            if step.doc_string:
-                lines.append('    """')
-                for doc_line in step.doc_string.splitlines():
-                    lines.append(f"    {doc_line}")
-                lines.append('    """')
-            for row in step.data_table:
-                lines.append("    | " + " | ".join(row) + " |")
-        lines.append("```\n")
+        scenario_only_tags = [t for t in scenario.tags if t not in feature.tags]
+        tags_html = '<span class="scenario-tags">' + " ".join(f'<code>{t}</code>' for t in scenario_only_tags) + '</span>' if scenario_only_tags else ""
+        status_cls = f"scenario-{scenario.status}" if scenario.status else "scenario-no-results"
 
-    return "\n".join(lines)
+        html += f'<details class="scenario-details {status_cls}">\n'
+        html += f'<summary><strong>Scenario: {_escape(scenario.name)}</strong>{tags_html}</summary>\n\n'
+
+        # Each step is a nested collapsible <details>
+        html += '<div class="scenario-steps">\n'
+        for step in scenario.steps:
+            step_line = f'<span class="step-keyword">{step.keyword}</span> {_escape(step.text)}'
+            indicator = _step_status_indicator(step)
+            duration = _step_duration_badge(step)
+            status_step_cls = f"step-{step.status}" if step.status else "step-no-results"
+
+            html += f'<details class="step-details {status_step_cls}">\n'
+            html += f'<summary class="step-summary">{indicator} {step_line} {duration}</summary>\n'
+            html += _render_step_body(step)
+            html += '</details>\n'
+
+        html += '</div>\n\n'
+        html += '</details>\n\n'
+
+    return html
 
 
 def render_tests_tab(feature: Feature) -> str:
@@ -374,21 +452,21 @@ def render_tests_tab(feature: Feature) -> str:
 
 
 def render_feature_page(feature: Feature) -> str:
-    """Render a complete feature page with Feature and Tests tabs."""
-    tags_html = " ".join(tag_html(t) for t in feature.tags)
+    """Render a feature page — title, tags as plain text below, then feature spec."""
+    tags_text = " &nbsp; ".join(feature.tags)
 
     md = f'<div class="feature-header" markdown>\n'
-    md += f"# {_escape(feature.name)}\n\n"
-    md += f"{tags_html}\n\n"
-    if feature.description:
-        md += f'<div class="feature-description">{_escape(feature.description)}</div>\n'
+    md += f"# Feature: {_escape(feature.name)}\n\n"
+    md += f'<div class="feature-tags">{tags_text}</div>\n'
     md += "</div>\n\n"
 
-    # Tabs
-    md += '=== "Feature"\n\n'
-    md += textwrap.indent(render_feature_tab(feature), "    ")
-    md += '\n\n=== "Tests"\n\n'
-    md += textwrap.indent(render_tests_tab(feature), "    ")
+    # Expand / Collapse all buttons (float right, no layout shift)
+    md += '<div class="toggle-buttons">\n'
+    md += '<button onclick="this.closest(\'article\').querySelectorAll(\'details\').forEach(d=>d.open=true)">Expand all</button>\n'
+    md += '<button onclick="this.closest(\'article\').querySelectorAll(\'details\').forEach(d=>d.open=false)">Collapse all</button>\n'
+    md += '</div>\n\n'
+
+    md += render_feature_tab(feature)
     md += "\n"
 
     return md
