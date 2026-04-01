@@ -40,6 +40,9 @@ theme:
 extra_css:
   - stylesheets/living-docs.css
 
+extra_javascript:
+  - javascripts/breadcrumb-nav.js
+
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -76,3 +79,23 @@ nav:
           - Safety Guardrails: prompt-eval/safety/safety-guardrails.md
       - Summarization:
           - Summarization Quality: prompt-eval/summarization/summarization-quality.md
+  - Tags:
+      - "@P0": tags/P0.md
+      - "@P1": tags/P1.md
+      - "@acceptance": tags/acceptance.md
+      - "@api": tags/api.md
+      - "@context-precision": tags/context-precision.md
+      - "@context-recall": tags/context-recall.md
+      - "@deterministic": tags/deterministic.md
+      - "@eventual-consistency": tags/eventual-consistency.md
+      - "@factual": tags/factual.md
+      - "@faithfulness": tags/faithfulness.md
+      - "@integration": tags/integration.md
+      - "@llm-judge": tags/llm-judge.md
+      - "@negative": tags/negative.md
+      - "@prompt-eval": tags/prompt-eval.md
+      - "@rag": tags/rag.md
+      - "@relevancy": tags/relevancy.md
+      - "@safety": tags/safety.md
+      - "@semantic": tags/semantic.md
+      - "@smoke": tags/smoke.md

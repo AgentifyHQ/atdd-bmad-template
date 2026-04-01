@@ -378,7 +378,7 @@ def _render_step_body(step: Step) -> str:
     return html
 
 
-def render_feature_tab(feature: Feature) -> str:
+def render_feature_tab(feature: Feature, depth: int = 2) -> str:
     """Render the feature spec — nested collapsibles: scenario > step > output."""
     html = ""
 
@@ -402,7 +402,11 @@ def render_feature_tab(feature: Feature) -> str:
     # Each scenario is a collapsible <details> block
     for scenario in feature.scenarios:
         scenario_only_tags = [t for t in scenario.tags if t not in feature.tags]
-        tags_html = '<span class="scenario-tags">' + " ".join(f'<code>{t}</code>' for t in scenario_only_tags) + '</span>' if scenario_only_tags else ""
+        prefix = "../" * (depth + 1)
+        tags_html = '<span class="scenario-tags">' + " ".join(
+            f'<a href="{prefix}tags/{t.lstrip("@")}/" class="scenario-tag-link"><code>{t}</code></a>'
+            for t in scenario_only_tags
+        ) + '</span>' if scenario_only_tags else ""
         status_cls = f"scenario-{scenario.status}" if scenario.status else "scenario-no-results"
 
         html += f'<details class="scenario-details {status_cls}">\n'
@@ -451,9 +455,20 @@ def render_tests_tab(feature: Feature) -> str:
     return html
 
 
-def render_feature_page(feature: Feature) -> str:
+def _tag_link(tag: str, depth: int = 2) -> str:
+    """Render a tag as a clickable link to the tag index page.
+    depth = number of path segments in the page URL (mkdocs adds +1 for directory URLs).
+    """
+    slug = tag.lstrip("@")
+    prefix = "../" * (depth + 1)  # +1 because mkdocs serves page/index.html
+    return f'<a href="{prefix}tags/{slug}/" class="tag-link">{tag}</a>'
+
+
+def render_feature_page(feature: Feature, rel_path: Path | None = None) -> str:
     """Render a feature page — title, tags as plain text below, then feature spec."""
-    tags_text = " &nbsp; ".join(feature.tags)
+    # Depth = number of parent dirs from the feature page to docs root
+    depth = len(rel_path.parent.parts) if rel_path else 2
+    tags_text = " &nbsp; ".join(_tag_link(t, depth) for t in feature.tags)
 
     md = f'<div class="feature-header" markdown>\n'
     md += f"# Feature: {_escape(feature.name)}\n\n"
@@ -466,7 +481,7 @@ def render_feature_page(feature: Feature) -> str:
     md += '<button onclick="this.closest(\'article\').querySelectorAll(\'details\').forEach(d=>d.open=false)">Collapse all</button>\n'
     md += '</div>\n\n'
 
-    md += render_feature_tab(feature)
+    md += render_feature_tab(feature, depth)
     md += "\n"
 
     return md
@@ -481,17 +496,75 @@ def _escape(text: str) -> str:
 # Navigation builder
 # ──────────────────────────────────────────────
 
-def build_nav(features: list[tuple[Path, Feature]]) -> list:
-    """Build mkdocs nav structure from features."""
+def generate_tag_pages(
+    features: list[tuple[Path, Feature]], output_dir: Path
+) -> dict[str, str]:
+    """Generate a page per tag listing all features/scenarios with that tag.
+
+    Returns dict of tag_name -> page_path (relative to docs).
+    """
+    # Collect: tag -> list of (feature, scenario_or_none, feature_page_path)
+    tag_index: dict[str, list[tuple[str, str, str, str]]] = {}
+
+    for rel_path, feature in features:
+        page_link = str(rel_path.with_suffix(".md"))
+
+        # Feature-level tags
+        for tag in feature.tags:
+            tag_index.setdefault(tag, []).append(
+                (feature.name, "", page_link, "feature")
+            )
+
+        # Scenario-level tags (only tags not already on feature)
+        for scenario in feature.scenarios:
+            for tag in scenario.tags:
+                if tag not in feature.tags:
+                    tag_index.setdefault(tag, []).append(
+                        (feature.name, scenario.name, page_link, "scenario")
+                    )
+
+    # Generate pages
+    tags_dir = output_dir / "tags"
+    tags_dir.mkdir(parents=True, exist_ok=True)
+    tag_pages: dict[str, str] = {}
+
+    for tag in sorted(tag_index.keys()):
+        entries = tag_index[tag]
+        slug = tag.lstrip("@")
+        page_path = f"tags/{slug}.md"
+        tag_pages[tag] = page_path
+
+        md = f"# {tag}\n\n"
+        md += f"All features and scenarios tagged with `{tag}`.\n\n"
+
+        # Group by feature
+        by_feature: dict[str, list[tuple[str, str, str]]] = {}
+        for feat_name, scen_name, link, entry_type in entries:
+            by_feature.setdefault(feat_name, []).append((scen_name, link, entry_type))
+
+        for feat_name, items in by_feature.items():
+            link = items[0][1]  # all point to same feature page
+            md += f"### [{feat_name}](../{link})\n\n"
+            for scen_name, _, entry_type in items:
+                if entry_type == "scenario" and scen_name:
+                    md += f"- Scenario: {scen_name}\n"
+            md += "\n"
+
+        (tags_dir / f"{slug}.md").write_text(md)
+        print(f"  Generated: {tags_dir / slug}.md")
+
+    return tag_pages
+
+
+def build_nav(features: list[tuple[Path, Feature]], tag_pages: dict[str, str] | None = None) -> list:
+    """Build mkdocs nav structure from features + tag pages."""
     tree: dict = {}
 
     for rel_path, feature in features:
-        parts = rel_path.parts  # e.g., ('api', 'user-management', 'user-crud.feature')
+        parts = rel_path.parts
         layer = parts[0]
         domain = parts[1] if len(parts) > 2 else ""
         filename = parts[-1].replace(".feature", "")
-
-        # Page path in docs
         page_path = str(rel_path.with_suffix(".md"))
 
         tree.setdefault(layer, {})
@@ -512,6 +585,13 @@ def build_nav(features: list[tuple[Path, Feature]]) -> list:
             else:
                 layer_items.append({_title(domain): domains[domain]})
         nav.append({_title(layer): layer_items})
+
+    # Add Tags section
+    if tag_pages:
+        tag_items = []
+        for tag in sorted(tag_pages.keys()):
+            tag_items.append({tag: tag_pages[tag]})
+        nav.append({"Tags": tag_items})
 
     return nav
 
@@ -541,11 +621,16 @@ def main():
         shutil.rmtree(output_dir)
     output_dir.mkdir(parents=True)
 
-    # Copy stylesheets reference
+    # Copy static assets
     (output_dir / "stylesheets").mkdir(exist_ok=True)
     css_src = Path("spec-web/overrides/stylesheets/living-docs.css")
     if css_src.exists():
         shutil.copy(css_src, output_dir / "stylesheets" / "living-docs.css")
+
+    (output_dir / "javascripts").mkdir(exist_ok=True)
+    js_src = Path("spec-web/overrides/javascripts/breadcrumb-nav.js")
+    if js_src.exists():
+        shutil.copy(js_src, output_dir / "javascripts" / "breadcrumb-nav.js")
 
     # Load cucumber results
     cucumber_results = load_cucumber_results(report_path)
@@ -569,7 +654,7 @@ def main():
     for rel_path, feature in features:
         page_path = output_dir / rel_path.with_suffix(".md")
         page_path.parent.mkdir(parents=True, exist_ok=True)
-        page_path.write_text(render_feature_page(feature))
+        page_path.write_text(render_feature_page(feature, rel_path))
         print(f"  Generated: {page_path}")
 
     # Generate index page
@@ -577,8 +662,12 @@ def main():
     (output_dir / "index.md").write_text(index_content)
     print(f"  Generated: {output_dir / 'index.md'}")
 
+    # Generate tag index pages
+    tag_pages = generate_tag_pages(features, output_dir)
+    print(f"\nTags: {len(tag_pages)} tag pages generated")
+
     # Generate nav
-    nav = build_nav(features)
+    nav = build_nav(features, tag_pages)
     print(f"\nNavigation ({len(features)} features):")
     for item in nav:
         print(f"  {item}")
@@ -640,25 +729,31 @@ def update_mkdocs_nav(nav: list) -> None:
         flags=re.DOTALL,
     )
 
+    def _yaml_key(k: str) -> str:
+        """Quote YAML keys that contain special characters."""
+        if any(c in k for c in '@:#{}[]|>&*!'):
+            return f'"{k}"'
+        return k
+
     # Build nav YAML
     nav_yaml = "\n# Auto-generated navigation\nnav:\n"
     for item in nav:
         for key, value in item.items():
             if isinstance(value, str):
-                nav_yaml += f"  - {key}: {value}\n"
+                nav_yaml += f"  - {_yaml_key(key)}: {value}\n"
             elif isinstance(value, list):
-                nav_yaml += f"  - {key}:\n"
+                nav_yaml += f"  - {_yaml_key(key)}:\n"
                 for sub in value:
                     if isinstance(sub, dict):
                         for sk, sv in sub.items():
                             if isinstance(sv, str):
-                                nav_yaml += f"      - {sk}: {sv}\n"
+                                nav_yaml += f"      - {_yaml_key(sk)}: {sv}\n"
                             elif isinstance(sv, list):
-                                nav_yaml += f"      - {sk}:\n"
+                                nav_yaml += f"      - {_yaml_key(sk)}:\n"
                                 for ssub in sv:
                                     if isinstance(ssub, dict):
                                         for ssk, ssv in ssub.items():
-                                            nav_yaml += f"          - {ssk}: {ssv}\n"
+                                            nav_yaml += f"          - {_yaml_key(ssk)}: {ssv}\n"
                     elif isinstance(sub, str):
                         nav_yaml += f"      - {sub}\n"
 
