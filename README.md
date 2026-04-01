@@ -105,6 +105,42 @@ npm run docs:deploy              # Build + deploy to GitHub Pages
 All test output is consolidated under `reports/` (gitignored).
 Living docs site tooling lives in `spec-web/`.
 
+> After deploying, GitHub Pages CDN may serve cached pages for a few minutes.
+> Use **Cmd+Shift+R** (Mac) or **Ctrl+Shift+R** (Windows/Linux) to hard refresh.
+
+### Design References
+
+Drop Figma exports or mockup images into an `assets/` folder next to feature files:
+
+```
+features/acceptance/user-management/
+├── user-login.feature
+├── user-login-visual.feature
+└── assets/                          ← Figma exports go here
+    ├── login-page.png
+    ├── login-error-state.png
+    └── dashboard.png
+```
+
+Images automatically appear as a scrollable gallery on the feature's living docs page. Click any image to view full-size. Works as design spec before development, then Playwright visual baselines can supplement or replace them.
+
+### Visual Regression
+
+Tag acceptance scenarios with `@visual` for screenshot-based testing:
+
+```gherkin
+@acceptance @visual
+Scenario: Login page matches visual baseline
+  Given I am on the login page
+  Then the page should match the visual baseline "login-page"
+```
+
+Visual diffs (expected vs actual vs diff) are viewable in the Playwright HTML report (`npm run report`) with an interactive slider. Update baselines after intentional changes:
+
+```bash
+npx playwright test --update-snapshots --grep @visual
+```
+
 ## Documentation
 
 | Document | Description |
@@ -119,6 +155,9 @@ Living docs site tooling lives in `spec-web/`.
 ```
 features/                              # Gherkin feature files (the WHAT)
 ├── acceptance/                        # UI acceptance scenarios
+│   └── {domain}/
+│       ├── *.feature                  #   Feature specs
+│       └── assets/                    #   Design mockups (Figma exports, screenshots)
 ├── api/                               # API contract scenarios
 ├── integration/                       # Cross-service scenarios
 └── prompt-eval/                       # Prompt quality specifications
@@ -128,6 +167,8 @@ features/                              # Gherkin feature files (the WHAT)
 
 tests/                                 # Step definitions (the HOW)
 ├── acceptance/steps/                  # UI steps (page + request)
+│   ├── *-login.steps.ts              #   Functional steps
+│   └── visual-regression.steps.ts    #   Visual baseline steps (@visual)
 ├── api/steps/                         # API steps (request only)
 ├── integration/steps/                 # Multi-service steps
 └── prompt-eval/
