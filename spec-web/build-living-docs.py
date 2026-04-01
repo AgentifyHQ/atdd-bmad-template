@@ -464,9 +464,49 @@ def _tag_link(tag: str, depth: int = 2) -> str:
     return f'<a href="{prefix}tags/{slug}/" class="tag-link">{tag}</a>'
 
 
-def render_feature_page(feature: Feature, rel_path: Path | None = None) -> str:
-    """Render a feature page — title, tags as plain text below, then feature spec."""
-    # Depth = number of parent dirs from the feature page to docs root
+def _find_assets(features_dir: Path, rel_path: Path) -> list[Path]:
+    """Find image assets for a feature file.
+
+    Looks for an assets/ directory next to the feature file or in the parent domain dir.
+    Returns list of image paths relative to features_dir.
+    """
+    images = []
+    search_dirs = [
+        features_dir / rel_path.parent / "assets",           # same dir: features/acceptance/user-management/assets/
+        features_dir / rel_path.parent.parent / "assets",     # parent dir: features/acceptance/assets/
+    ]
+    for assets_dir in search_dirs:
+        if assets_dir.is_dir():
+            for img in sorted(assets_dir.iterdir()):
+                if img.suffix.lower() in ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'):
+                    images.append(img)
+    return images
+
+
+def _copy_assets(images: list[Path], features_dir: Path, output_dir: Path, rel_path: Path) -> list[str]:
+    """Copy image assets to output dir and return relative paths for embedding."""
+    if not images:
+        return []
+
+    # Put assets next to the generated .md file
+    asset_out_dir = output_dir / rel_path.parent / "assets"
+    asset_out_dir.mkdir(parents=True, exist_ok=True)
+
+    relative_paths = []
+    for img in images:
+        dest = asset_out_dir / img.name
+        shutil.copy(img, dest)
+        relative_paths.append(f"assets/{img.name}")
+
+    return relative_paths
+
+
+def render_feature_page(
+    feature: Feature,
+    rel_path: Path | None = None,
+    asset_paths: list[str] | None = None,
+) -> str:
+    """Render a feature page — title, tags, design mockups, then feature spec."""
     depth = len(rel_path.parent.parts) if rel_path else 2
     tags_text = " &nbsp; ".join(_tag_link(t, depth) for t in feature.tags)
 
@@ -475,11 +515,26 @@ def render_feature_page(feature: Feature, rel_path: Path | None = None) -> str:
     md += f'<div class="feature-tags">{tags_text}</div>\n'
     md += "</div>\n\n"
 
-    # Expand / Collapse all buttons (float right, no layout shift)
+    # Expand / Collapse all buttons
     md += '<div class="toggle-buttons">\n'
     md += '<button onclick="this.closest(\'article\').querySelectorAll(\'details\').forEach(d=>d.open=true)">Expand all</button>\n'
     md += '<button onclick="this.closest(\'article\').querySelectorAll(\'details\').forEach(d=>d.open=false)">Collapse all</button>\n'
     md += '</div>\n\n'
+
+    # Design mockups / visual references
+    if asset_paths:
+        md += '<div class="design-references">\n\n'
+        md += "**Design References**\n\n"
+        md += '<div class="design-gallery">\n'
+        for path in asset_paths:
+            # Derive label from filename: login-page.png -> Login Page
+            label = Path(path).stem.replace("-", " ").replace("_", " ").title()
+            md += f'<figure class="design-figure">\n'
+            md += f'<img src="{path}" alt="{label}" loading="lazy">\n'
+            md += f'<figcaption>{label}</figcaption>\n'
+            md += f'</figure>\n'
+        md += '</div>\n\n'
+        md += '</div>\n\n'
 
     md += render_feature_tab(feature, depth)
     md += "\n"
@@ -650,8 +705,14 @@ def main():
     for rel_path, feature in features:
         page_path = output_dir / rel_path.with_suffix(".md")
         page_path.parent.mkdir(parents=True, exist_ok=True)
-        page_path.write_text(render_feature_page(feature, rel_path))
-        print(f"  Generated: {page_path}")
+
+        # Find and copy design assets
+        images = _find_assets(features_dir, rel_path)
+        asset_paths = _copy_assets(images, features_dir, output_dir, rel_path)
+
+        page_path.write_text(render_feature_page(feature, rel_path, asset_paths))
+        asset_note = f" (+{len(asset_paths)} images)" if asset_paths else ""
+        print(f"  Generated: {page_path}{asset_note}")
 
     # Generate index page
     index_content = render_index(features)

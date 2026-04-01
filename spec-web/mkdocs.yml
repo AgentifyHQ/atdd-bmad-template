@@ -62,6 +62,7 @@ nav:
   - Home: index.md
   - Acceptance:
       - User Management:
+          - User Login Visual: acceptance/user-management/user-login-visual.md
           - User Login: acceptance/user-management/user-login.md
   - Api:
       - User Management:
@@ -96,3 +97,4 @@ nav:
       - "@safety": tags/safety.md
       - "@semantic": tags/semantic.md
       - "@smoke": tags/smoke.md
+      - "@visual": tags/visual.md
