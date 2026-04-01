@@ -1,0 +1,79 @@
+site_name: Test Architect — Living Documentation
+site_description: BDD feature specifications with test results
+site_url: ''
+docs_dir: site
+site_dir: build
+
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    logo: material/test-tube
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - content.tabs.link
+    - search.highlight
+    - search.share
+
+extra_css:
+  - stylesheets/living-docs.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+# Auto-generated navigation
+nav:
+  - Home: index.md
+  - Acceptance:
+      - User Management:
+          - User Login: acceptance/user-management/user-login.md
+  - Api:
+      - User Management:
+          - User Crud: api/user-management/user-crud.md
+  - Integration:
+      - Order Flow:
+          - Cross Service Order: integration/order-flow/cross-service-order.md
+  - Prompt Eval:
+      - Rag:
+          - Rag Quality: prompt-eval/rag/rag-quality.md
+      - Safety:
+          - Safety Guardrails: prompt-eval/safety/safety-guardrails.md
+      - Summarization:
+          - Summarization Quality: prompt-eval/summarization/summarization-quality.md

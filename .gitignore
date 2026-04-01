@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build
+dist/
+
+# Reports & generated artifacts (all under reports/)
+reports/
+
+# Living docs (generated)
+spec-web/site/
+spec-web/build/
+
+# Prompt eval
+tests/prompt-eval/python/__pycache__/
+tests/prompt-eval/python/.pytest_cache/
+tests/prompt-eval/python/*.egg-info/
+tests/prompt-eval/python/.venv/
+tests/prompt-eval/promptfoo/output/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

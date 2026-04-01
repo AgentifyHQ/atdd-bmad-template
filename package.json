@@ -1,0 +1,38 @@
+{
+  "name": "standalone-test-repo",
+  "version": "1.0.0",
+  "description": "Standalone ATDD test repository — BDD acceptance, API, integration, and prompt evaluation tests",
+  "private": true,
+  "scripts": {
+    "test": "npx bddgen && npx playwright test",
+    "test:acceptance": "npx bddgen && npx playwright test --project=acceptance",
+    "test:api": "npx bddgen && npx playwright test --project=api",
+    "test:integration": "npx bddgen && npx playwright test --project=integration",
+    "test:prompt-eval": "npx bddgen && npx playwright test --project=prompt-eval",
+    "test:prompt-eval:python": "cd tests/prompt-eval/python && python -m pytest -v",
+    "test:prompt-eval:all": "npm run test:prompt-eval && npm run test:prompt-eval:python",
+    "prompt:compare": "npx promptfoo eval --config tests/prompt-eval/promptfoo/promptfooconfig.yaml",
+    "prompt:compare:view": "npx promptfoo view --config tests/prompt-eval/promptfoo/promptfooconfig.yaml",
+    "prompt:redteam": "npx promptfoo redteam generate --config tests/prompt-eval/promptfoo/promptfooconfig.yaml && npx promptfoo redteam eval",
+    "report": "npx playwright show-report reports/playwright",
+    "report:cucumber": "open reports/cucumber/index.html",
+    "docs:build": "python3 spec-web/build-living-docs.py && mkdocs build -f spec-web/mkdocs.yml",
+    "docs:serve": "python3 spec-web/build-living-docs.py && mkdocs serve -f spec-web/mkdocs.yml",
+    "docs:deploy": "python3 spec-web/build-living-docs.py && mkdocs gh-deploy -f spec-web/mkdocs.yml",
+    "bddgen": "npx bddgen",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0",
+    "dotenv": "^17.3.1",
+    "playwright-bdd": "^8.5.0",
+    "promptfoo": "^0.105.0",
+    "typescript": "^5.7.0",
+    "zod": "^3.24.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

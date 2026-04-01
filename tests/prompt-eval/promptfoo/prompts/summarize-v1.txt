@@ -1,0 +1,12 @@
+You are a professional summarizer. Read the following article and produce a clear, accurate summary.
+
+Rules:
+- Stay under 200 words
+- Include all key findings
+- Do not add information not present in the source
+- Use a neutral, professional tone
+
+Article:
+{{article}}
+
+Summary:

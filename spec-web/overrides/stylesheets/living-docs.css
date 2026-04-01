@@ -1,0 +1,188 @@
+/* ──────────────────────────────────────────────
+   Living Documentation — Custom Styles
+   Override any of these to change the aesthetic.
+   ────────────────────────────────────────────── */
+
+/* ── Feature header ── */
+.feature-header {
+  border-bottom: 2px solid var(--md-primary-fg-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-header .feature-description {
+  color: var(--md-default-fg-color--light);
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
+  font-family: var(--md-code-font-family);
+}
+
+.tag-layer     { background: var(--md-primary-fg-color); color: white; }
+.tag-priority  { background: #6d4c9f; color: white; }
+.tag-category  { background: var(--md-accent-fg-color); color: white; }
+.tag-default   { background: var(--md-default-fg-color--lighter); color: var(--md-default-fg-color); }
+
+/* ── Scenario block ── */
+.scenario {
+  border-left: 4px solid var(--md-default-fg-color--lightest);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0 0.25rem 0.25rem 0;
+  background: var(--md-code-bg-color);
+}
+
+.scenario-passed {
+  border-left-color: #4caf50;
+}
+
+.scenario-failed {
+  border-left-color: #f44336;
+}
+
+.scenario-skipped {
+  border-left-color: #ff9800;
+}
+
+.scenario-no-results {
+  border-left-color: var(--md-default-fg-color--lightest);
+}
+
+.scenario-title {
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scenario-title .status-icon {
+  font-size: 0.9rem;
+}
+
+/* ── Steps ── */
+.step {
+  font-family: var(--md-code-font-family);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  margin: 0.15rem 0;
+  border-radius: 0.2rem;
+  line-height: 1.6;
+}
+
+.step-passed {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.step-failed {
+  background: rgba(244, 67, 54, 0.1);
+  text-decoration: line-through;
+  text-decoration-color: rgba(244, 67, 54, 0.5);
+}
+
+.step-skipped {
+  background: rgba(255, 152, 0, 0.08);
+  opacity: 0.7;
+}
+
+.step-no-results {
+  background: transparent;
+  opacity: 0.85;
+}
+
+.step-keyword {
+  font-weight: 700;
+  color: var(--md-primary-fg-color);
+}
+
+.step-duration {
+  float: right;
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* ── Error details (collapsible) ── */
+.step-error details {
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.step-error details summary {
+  font-size: 0.8rem;
+  color: #f44336;
+  cursor: pointer;
+  font-family: var(--md-code-font-family);
+}
+
+.step-error pre {
+  font-size: 0.75rem;
+  background: rgba(244, 67, 54, 0.05);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Summary badges ── */
+.summary-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.summary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.summary-passed  { background: rgba(76, 175, 80, 0.12); color: #2e7d32; }
+.summary-failed  { background: rgba(244, 67, 54, 0.12); color: #c62828; }
+.summary-skipped { background: rgba(255, 152, 0, 0.12); color: #e65100; }
+.summary-total   { background: var(--md-default-fg-color--lightest); color: var(--md-default-fg-color); }
+
+/* ── DocString rendering ── */
+.step-docstring {
+  font-family: var(--md-code-font-family);
+  font-size: 0.8rem;
+  background: var(--md-code-bg-color);
+  border-left: 3px solid var(--md-default-fg-color--lightest);
+  padding: 0.4rem 0.8rem;
+  margin: 0.2rem 0 0.2rem 1.5rem;
+  white-space: pre-wrap;
+  color: var(--md-default-fg-color--light);
+}
+
+/* ── Data table rendering ── */
+.step-datatable {
+  margin: 0.2rem 0 0.2rem 1.5rem;
+  font-size: 0.8rem;
+}
+
+.step-datatable table {
+  border-collapse: collapse;
+}
+
+.step-datatable td, .step-datatable th {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  font-family: var(--md-code-font-family);
+  font-size: 0.8rem;
+}

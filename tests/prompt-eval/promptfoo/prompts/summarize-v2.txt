@@ -1,0 +1,6 @@
+Summarize the article below in under 150 words. Be concise and factual. Include only claims directly supported by the source text. Output plain text, no bullet points.
+
+Article:
+{{article}}
+
+Concise summary:

@@ -1,0 +1,36 @@
+[project]
+name = "prompt-eval"
+version = "1.0.0"
+description = "BDD prompt evaluation tests using DeepEval, Ragas, and pytest-bdd"
+requires-python = ">=3.11"
+dependencies = [
+    "deepeval>=3.0.0",
+    "ragas>=0.2.0",
+    "pytest>=8.0.0",
+    "pytest-bdd>=8.1.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs-material>=9.6.0",
+]
+dev = [
+    "ruff>=0.8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+bdd_features_base_dir = "../../../features/prompt-eval/"
+markers = [
+    "faithfulness: Tests checking factual grounding of LLM outputs",
+    "relevancy: Tests checking answer relevancy",
+    "hallucination: Tests checking for hallucinated content",
+    "rag: Tests evaluating RAG pipeline quality",
+    "slow: Tests that make multiple LLM calls (deselect with '-m not slow')",
+]
+
+[tool.ruff]
+line-length = 120

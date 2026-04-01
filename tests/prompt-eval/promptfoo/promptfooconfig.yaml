@@ -1,0 +1,68 @@
+# ──────────────────────────────────────────────────────────────
+# Promptfoo — Side-by-Side Comparison & Red-Teaming
+#
+# Quality gate assertions are now in BDD feature files
+# (features/prompt-eval/). This config is for exploratory
+# comparison and security auditing — not specification.
+# ──────────────────────────────────────────────────────────────
+description: 'Prompt comparison & red-teaming'
+
+# ── Prompts to compare side-by-side ──
+prompts:
+  - id: summarize-v1
+    label: 'Summarization v1 (standard)'
+    raw: file://prompts/summarize-v1.txt
+  - id: summarize-v2
+    label: 'Summarization v2 (concise)'
+    raw: file://prompts/summarize-v2.txt
+
+# ── Providers (models) to compare ──
+providers:
+  - id: anthropic:messages:claude-sonnet-4-6
+    label: 'Claude Sonnet 4.6'
+    config:
+      max_tokens: 1024
+      temperature: 0
+  # Uncomment to add comparison models:
+  # - id: openai:gpt-4o
+  #   label: 'GPT-4o'
+  #   config:
+  #     max_tokens: 1024
+  #     temperature: 0
+
+# ── Comparison test cases ──
+# These generate a side-by-side matrix: prompts x providers x test cases
+# Use `npx promptfoo eval` to see the comparison table
+tests:
+  - description: 'Climate article summary — comparison'
+    vars:
+      article: file://datasets/article-climate.txt
+    assert:
+      # Minimal assertions — just enough to show in comparison table
+      - type: javascript
+        value: 'output.split(/\\s+/).length <= 200'
+      - type: similar
+        value: file://datasets/golden-summary-climate.txt
+        threshold: 0.6
+
+# ── Output ──
+outputPath: output/comparison-results.json
+
+# ──────────────────────────────────────────────────────────────
+# Red-Teaming Configuration
+#
+# Run separately: npx promptfoo redteam generate && npx promptfoo redteam eval
+# Docs: https://www.promptfoo.dev/docs/red-team/
+# ──────────────────────────────────────────────────────────────
+# redteam:
+#   purpose: 'Summarize articles accurately and concisely'
+#   plugins:
+#     - prompt-injection
+#     - jailbreak
+#     - pii
+#     - overreliance
+#     - hallucination
+#   strategies:
+#     - jailbreak
+#     - prompt-injection
+#   numTests: 10
