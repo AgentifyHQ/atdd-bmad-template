@@ -182,13 +182,25 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Hide scrollbar but keep scroll functional */
+/* Visible scrollbar */
 .design-gallery::-webkit-scrollbar {
-  height: 4px;
+  height: 10px;
+}
+.design-gallery::-webkit-scrollbar-track {
+  background: var(--md-default-fg-color--lightest);
+  border-radius: 5px;
 }
 .design-gallery::-webkit-scrollbar-thumb {
-  background: var(--md-default-fg-color--lightest);
-  border-radius: 2px;
+  background: var(--md-default-fg-color--light);
+  border-radius: 5px;
+}
+.design-gallery::-webkit-scrollbar-thumb:hover {
+  background: var(--md-default-fg-color);
+}
+/* Firefox */
+.design-gallery {
+  scrollbar-width: auto;
+  scrollbar-color: var(--md-default-fg-color--light) var(--md-default-fg-color--lightest);
 }
 
 .design-figure {
