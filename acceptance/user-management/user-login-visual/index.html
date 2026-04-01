@@ -1862,19 +1862,41 @@
 <h4 class="design-heading">Design References</h4>
 <div class="design-gallery">
 <figure class="design-figure">
-<img src="../assets/dashboard.png" alt="Dashboard">
+<img src="../assets/dashboard.png" alt="Dashboard" onclick="openLightbox(this, 'Dashboard')">
 <figcaption>Dashboard</figcaption>
 </figure>
 <figure class="design-figure">
-<img src="../assets/login-error-state.png" alt="Login Error State">
+<img src="../assets/login-error-state.png" alt="Login Error State" onclick="openLightbox(this, 'Login Error State')">
 <figcaption>Login Error State</figcaption>
 </figure>
 <figure class="design-figure">
-<img src="../assets/login-page.png" alt="Login Page">
+<img src="../assets/login-page.png" alt="Login Page" onclick="openLightbox(this, 'Login Page')">
 <figcaption>Login Page</figcaption>
 </figure>
 </div>
 </div>
+
+<script>
+function openLightbox(img, caption) {
+  var overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.onclick = function() { overlay.remove(); };
+  var fullImg = document.createElement('img');
+  fullImg.src = img.src;
+  fullImg.alt = caption;
+  overlay.appendChild(fullImg);
+  if (caption) {
+    var cap = document.createElement('div');
+    cap.className = 'lightbox-caption';
+    cap.textContent = caption;
+    overlay.appendChild(cap);
+  }
+  document.body.appendChild(overlay);
+  document.addEventListener('keydown', function handler(e) {
+    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', handler); }
+  });
+}
+</script>
 
 <div class="feature-description">As a designer
 I want the login page to maintain its visual appearance
