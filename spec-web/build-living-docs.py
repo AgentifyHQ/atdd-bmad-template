@@ -496,7 +496,8 @@ def _copy_assets(images: list[Path], features_dir: Path, output_dir: Path, rel_p
     for img in images:
         dest = asset_out_dir / img.name
         shutil.copy(img, dest)
-        relative_paths.append(f"assets/{img.name}")
+        # ../assets/ because mkdocs serves pages as directories (page/index.html)
+        relative_paths.append(f"../assets/{img.name}")
 
     return relative_paths
 
@@ -523,17 +524,17 @@ def render_feature_page(
 
     # Design mockups / visual references
     if asset_paths:
-        md += '<div class="design-references">\n\n'
-        md += "**Design References**\n\n"
+        md += '<div class="design-references">\n'
+        md += '<h4 class="design-heading">Design References</h4>\n'
         md += '<div class="design-gallery">\n'
         for path in asset_paths:
             # Derive label from filename: login-page.png -> Login Page
             label = Path(path).stem.replace("-", " ").replace("_", " ").title()
             md += f'<figure class="design-figure">\n'
-            md += f'<img src="{path}" alt="{label}" loading="lazy">\n'
+            md += f'<img src="{path}" alt="{label}">\n'
             md += f'<figcaption>{label}</figcaption>\n'
             md += f'</figure>\n'
-        md += '</div>\n\n'
+        md += '</div>\n'
         md += '</div>\n\n'
 
     md += render_feature_tab(feature, depth)
