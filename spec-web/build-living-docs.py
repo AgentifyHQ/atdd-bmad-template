@@ -16,6 +16,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -496,8 +497,9 @@ def _copy_assets(images: list[Path], features_dir: Path, output_dir: Path, rel_p
     for img in images:
         dest = asset_out_dir / img.name
         shutil.copy(img, dest)
-        # ../assets/ because mkdocs serves pages as directories (page/index.html)
-        relative_paths.append(f"../assets/{img.name}")
+        # Cache-bust with file hash so browsers fetch updated images
+        file_hash = hashlib.md5(img.read_bytes()).hexdigest()[:8]
+        relative_paths.append(f"../assets/{img.name}?v={file_hash}")
 
     return relative_paths
 
