@@ -36,7 +36,16 @@ export default defineConfig({
   // Global defaults
   // ──────────────────────────────────────────
   timeout: 60_000,
-  expect: { timeout: 10_000 },
+  expect: {
+    timeout: 10_000,
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.2,
+      animations: 'disabled',
+    },
+  },
+  // Visual regression baselines stored alongside feature files
+  snapshotPathTemplate: 'tests/{testDir}/__snapshots__/{arg}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

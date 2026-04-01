@@ -134,6 +134,15 @@ Scenario Outline: Output must not contain banned patterns
 - Use polling for eventual consistency: `eventually the {thing} should be {value}`
 - Set reasonable poll limits (15 attempts, 1s interval)
 
+### Visual Regression (Acceptance)
+- Tag with `@visual` — visual tests are optional, heavier than functional tests
+- Use `the page should match the visual baseline "{name}"` for full-page screenshots
+- Use `with masked:` data table to exclude dynamic content (timestamps, avatars, counts)
+- Baselines stored in `tests/{testDir}/__snapshots__/` — committed to git
+- Update baselines: `npx playwright test --update-snapshots --grep @visual`
+- **Review visual diffs in Playwright HTML report** (`npm run report`) — it has an interactive slider. Living docs show pass/fail only.
+- Run in Docker/CI for cross-platform consistency — font rendering differs across OS
+
 ### Prompt Eval
 - Tag by evaluation layer: `@deterministic`, `@semantic`, `@llm-judge`, `@faithfulness`, `@rag`
 - Reference prompts by ID: `I generate a summary using prompt "summarize-v1"`
