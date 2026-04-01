@@ -329,3 +329,29 @@ playwright-bdd step signatures are `async ({ fixtures }, ...matchedParams)`. The
 ### 2. Placeholder data must match feature file assertions
 
 When writing placeholder/stub data for dry-run testing, verify it satisfies ALL deterministic assertions in the feature files. If a feature says `the output should contain "carbon emissions"`, the placeholder must include that exact phrase. Run `--grep "@deterministic"` after any placeholder change to catch mismatches immediately.
+
+## Visual Regression Steps
+
+Reusable visual regression steps live in `tests/acceptance/steps/visual-regression.steps.ts`. You don't need to create new steps for new visual tests — just use the existing patterns in feature files:
+
+```gherkin
+# Full page screenshot
+Then the page should match the visual baseline "login-page"
+
+# Full page with masked dynamic elements
+Then the page should match the visual baseline "dashboard" with masked:
+  | selector            |
+  | .timestamp          |
+  | .user-avatar        |
+
+# Single element screenshot
+Then the element ".chart" should match the visual baseline "revenue-chart"
+```
+
+Steps handle:
+- `waitForLoadState('networkidle')` before capturing
+- `animations: 'disabled'` to freeze CSS animations
+- `fullPage: true` for page-level captures
+- Mask array built from data table for dynamic content
+
+Visual diffs are viewable in Playwright HTML report (`npm run report`) — not in the living docs (which show pass/fail only).

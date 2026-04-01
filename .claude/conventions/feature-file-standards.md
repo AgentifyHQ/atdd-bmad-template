@@ -150,6 +150,26 @@ Scenario Outline: Output must not contain banned patterns
 - Rubrics go in docstrings, not hardcoded in steps
 - Threshold values go in the Then step: `with threshold 0.7`, `>= 0.7`
 
+## Design Assets
+
+Place Figma exports, mockups, or reference screenshots in an `assets/` folder alongside feature files:
+
+```
+features/acceptance/user-management/
+├── user-login.feature
+├── user-login-visual.feature
+└── assets/
+    ├── login-page.png
+    └── dashboard.png
+```
+
+- The build script auto-detects `assets/` and embeds a scrollable gallery on the living docs page
+- Use descriptive filenames: `login-page.png` → label "Login Page"
+- All features in the same domain share the same `assets/` directory
+- Supported: PNG, JPG, SVG, WebP, GIF
+- Images are cache-busted with content hash — no stale browser cache issues
+- Click any thumbnail in the living docs to view full-size (lightbox)
+
 ## File Organization
 
 ```
@@ -183,3 +203,9 @@ When('I create an order for user with {int} units of {string}', ...)
 `defineBddConfig({ features: 'features/prompt-eval/**/*.feature' })` picks up ALL `.feature` files under that path. If you add a feature file with steps intended only for Python (pytest-bdd), playwright-bdd will still try to match those steps and fail with "Missing step definitions."
 
 **Solution:** Every step pattern used in `features/prompt-eval/` must have a corresponding step definition in `tests/prompt-eval/ts-steps/`. For RAG-specific scenarios, the TS steps can use promptfoo's `matchesFactuality`/`matchesLlmRubric` as proxies for the full Ragas metrics. The Python runner provides the deep evaluation; the TS runner provides a lighter-weight check against the same spec.
+
+### 3. Never use `loading="lazy"` on images in living docs
+
+MkDocs Material's `navigation.instant` feature loads pages via XHR without a full browser navigation. This means the browser's lazy loading observer is never triggered for images that are already "in the viewport." Images will appear broken.
+
+**Solution:** The build script renders `<img>` tags without `loading="lazy"`. If you add images manually to any generated markdown, do not add lazy loading.
