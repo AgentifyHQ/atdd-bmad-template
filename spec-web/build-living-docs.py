@@ -528,14 +528,36 @@ def render_feature_page(
         md += '<h4 class="design-heading">Design References</h4>\n'
         md += '<div class="design-gallery">\n'
         for path in asset_paths:
-            # Derive label from filename: login-page.png -> Login Page
             label = Path(path).stem.replace("-", " ").replace("_", " ").title()
             md += f'<figure class="design-figure">\n'
-            md += f'<img src="{path}" alt="{label}">\n'
+            md += f'<img src="{path}" alt="{label}" onclick="openLightbox(this, \'{label}\')">\n'
             md += f'<figcaption>{label}</figcaption>\n'
             md += f'</figure>\n'
         md += '</div>\n'
         md += '</div>\n\n'
+
+        # Inline lightbox JS (only on pages with images)
+        md += """<script>
+function openLightbox(img, caption) {
+  var overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.onclick = function() { overlay.remove(); };
+  var fullImg = document.createElement('img');
+  fullImg.src = img.src;
+  fullImg.alt = caption;
+  overlay.appendChild(fullImg);
+  if (caption) {
+    var cap = document.createElement('div');
+    cap.className = 'lightbox-caption';
+    cap.textContent = caption;
+    overlay.appendChild(cap);
+  }
+  document.body.appendChild(overlay);
+  document.addEventListener('keydown', function handler(e) {
+    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', handler); }
+  });
+}
+</script>\n\n"""
 
     md += render_feature_tab(feature, depth)
     md += "\n"
