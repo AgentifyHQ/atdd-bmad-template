@@ -1862,57 +1862,102 @@
 I want the login page to maintain its visual appearance
 So that UI changes are caught before they reach production</div>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Login page matches visual baseline</strong><span class="scenario-tags"><a href="../../../tags/smoke/" class="scenario-tag-link"><code>@smoke</code></a></span></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> I am on the login page </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> I am on the login page <span class="step-duration">14ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">14ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login
+Call log:
+  - navigating to "http://localhost:3000/login", waiting until "load"
+
+   at tests/acceptance/steps/user-login.steps.ts:17
+
+  15 |
+  16 | Given('I am on the login page', async ({ page }) =&gt; {
+&gt; 17 |   await page.goto('/login');
+     |              ^
+  18 |   await expect(page).toHaveURL(/\/login/);
+  19 | });
+  20 |</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> the page should match the visual baseline "login-page" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
 </div>
 
 </details>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Login error state matches visual baseline</strong></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> I am on the login page </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> I am on the login page <span class="step-duration">11ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">11ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login
+Call log:
+  - navigating to "http://localhost:3000/login", waiting until "load"
+
+   at tests/acceptance/steps/user-login.steps.ts:17
+
+  15 |
+  16 | Given('I am on the login page', async ({ page }) =&gt; {
+&gt; 17 |   await page.goto('/login');
+     |              ^
+  18 |   await expect(page).toHaveURL(/\/login/);
+  19 | });
+  20 |</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">When</span> I enter email "invalid" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> I enter password "wrong" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> I click the login button </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> the page should match the visual baseline "login-error-state" with masked: </summary>
 <div class="step-body">
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 <div class="step-datatable"><table>
 <tr><th>selector</th></tr>
 <tr><td>.timestamp</td></tr>
@@ -1924,49 +1969,74 @@ So that UI changes are caught before they reach production</div>
 
 </details>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Dashboard matches visual baseline after login</strong></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> a registered user exists with email "testuser@example.com" </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> a registered user exists with email "testuser@example.com" <span class="step-duration">318ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">318ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: apiRequestContext.post: connect ECONNREFUSED ::1:3000
+Call log:
+  - → POST http://localhost:3000/api/test/seed-user
+    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36
+    - accept: */*
+    - accept-encoding: gzip,deflate,br
+    - content-type: application/json
+    - content-length: 82</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> I am on the login page </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">When</span> I enter email "testuser@example.com" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> I enter password "ValidPassword123!" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> I click the login button </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> I should be redirected to the dashboard </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> the page should match the visual baseline "dashboard" with masked: </summary>
 <div class="step-body">
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 <div class="step-datatable"><table>
 <tr><th>selector</th></tr>
 <tr><td>.timestamp</td></tr>

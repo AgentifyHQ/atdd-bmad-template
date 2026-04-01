@@ -1871,146 +1871,224 @@ So that data remains consistent across all microservices</div>
 </div>
 </div>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Successful order decreases inventory</strong><span class="scenario-tags"><a href="../../../tags/smoke/" class="scenario-tag-link"><code>@smoke</code></a></span></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Order Buyer" exists in the user service </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Order Buyer" exists in the user service <span class="step-duration">311ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">311ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: apiRequestContext.post: connect ECONNREFUSED ::1:3001
+Call log:
+  - → POST http://localhost:3001/api/users
+    - user-agent: Playwright/1.59.1 (arm64; macOS 26.2) node/23.3
+    - accept: application/json
+    - accept-encoding: gzip,deflate,br
+    - Content-Type: application/json
+    - content-length: 101</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> product "WIDGET-001" has 50 units in inventory </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">When</span> I create an order for user with 3 units of "WIDGET-001" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> the order service should return status 201 </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> the order should have status "pending" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> eventually the inventory for "WIDGET-001" should be 47 units </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
 </div>
 
 </details>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Order rejected for non-existent user</strong></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">When</span> I create an order for non-existent user "ghost-user-id" with 1 unit of "WIDGET-001" </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">When</span> I create an order for non-existent user "ghost-user-id" with 1 unit of "WIDGET-001" <span class="step-duration">310ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">310ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: apiRequestContext.post: connect ECONNREFUSED ::1:3002
+Call log:
+  - → POST http://localhost:3002/api/orders
+    - user-agent: Playwright/1.59.1 (arm64; macOS 26.2) node/23.3
+    - accept: application/json
+    - accept-encoding: gzip,deflate,br
+    - Content-Type: application/json
+    - content-length: 76</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> the order service should return status 400 </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> the order error code should be "INVALID_USER" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
 </div>
 
 </details>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Order rejected when insufficient inventory</strong></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Low Stock Buyer" exists in the user service </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Low Stock Buyer" exists in the user service <span class="step-duration">312ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">312ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: apiRequestContext.post: connect ECONNREFUSED ::1:3001
+Call log:
+  - → POST http://localhost:3001/api/users
+    - user-agent: Playwright/1.59.1 (arm64; macOS 26.2) node/23.3
+    - accept: application/json
+    - accept-encoding: gzip,deflate,br
+    - Content-Type: application/json
+    - content-length: 109</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> product "RARE-001" has 2 units in inventory </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">When</span> I create an order for user with 5 units of "RARE-001" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> the order service should return status 409 </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> the order error code should be "INSUFFICIENT_INVENTORY" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
 </div>
 
 </details>
 
-<details class="scenario-details scenario-no-results">
+<details class="scenario-details scenario-failed">
 <summary><strong>Scenario: Order status updates propagate to user service</strong><span class="scenario-tags"><a href="../../../tags/eventual-consistency/" class="scenario-tag-link"><code>@eventual-consistency</code></a></span></summary>
 
 <div class="scenario-steps">
-<details class="step-details step-no-results">
-<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Status Watcher" exists in the user service </summary>
+<details class="step-details step-failed">
+<summary class="step-summary"> <span class="step-keyword">Given</span> a user "Status Watcher" exists in the user service <span class="step-duration">313ms</span></summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-failed">FAILED</span> &nbsp; <span class="step-result-duration">313ms</span>
+</div>
+<div class="step-error-detail">
+<pre>Error: apiRequestContext.post: connect ECONNREFUSED ::1:3001
+Call log:
+  - → POST http://localhost:3001/api/users
+    - user-agent: Playwright/1.59.1 (arm64; macOS 26.2) node/23.3
+    - accept: application/json
+    - accept-encoding: gzip,deflate,br
+    - Content-Type: application/json
+    - content-length: 107</pre>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> product "WIDGET-002" has 100 units in inventory </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">When</span> I create an order for user with 1 units of "WIDGET-002" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">And</span> the order is marked as "shipped" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
-<details class="step-details step-no-results">
+<details class="step-details step-skipped">
 <summary class="step-summary"> <span class="step-keyword">Then</span> eventually the user service should show the order as "shipped" </summary>
 <div class="step-body">
-<div class="step-no-output">No test results available</div>
+<div class="step-test-output">
+<span class="step-result-label step-result-skipped">SKIPPED</span>
+</div>
 </div>
 </details>
 </div>
