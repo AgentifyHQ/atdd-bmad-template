@@ -1,31 +1,114 @@
 /* ──────────────────────────────────────────────
-   Living Documentation — Custom Styles
-   Override any of these to change the aesthetic.
+   Living Documentation — Paper Style
+   No UI chrome. Reads like a document.
+
+   IMPORTANT: Must use .md-typeset prefix and
+   !important to override Material's admonition
+   styles which it applies to ALL <details>.
    ────────────────────────────────────────────── */
 
-/* ── Feature header ── */
+/* ── Hide sidebar site title ── */
+.md-nav--primary > .md-nav__title {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════
+   Nuke Material's admonition styling on our
+   <details> elements. Material treats every
+   <details> as an admonition with borders,
+   backgrounds, shadows, icons, and padding.
+   ══════════════════════════════════════════════ */
+
+.md-typeset details.scenario-details,
+.md-typeset details.step-details {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  display: block !important;
+  font-size: inherit !important;
+  margin: 0.1rem 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.md-typeset details.scenario-details > summary,
+.md-typeset details.step-details > summary {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  font-weight: inherit !important;
+  list-style: none !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  padding: 0.2rem 0 !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+/* Kill Material's icon + chevron pseudo-elements */
+.md-typeset details.scenario-details > summary::before,
+.md-typeset details.scenario-details > summary::after,
+.md-typeset details.step-details > summary::before,
+.md-typeset details.step-details > summary::after {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+}
+
+.md-typeset details.scenario-details > summary::-webkit-details-marker,
+.md-typeset details.step-details > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Kill Material's [dir=ltr] padding overrides */
+[dir="ltr"] .md-typeset details.scenario-details > summary,
+[dir="ltr"] .md-typeset details.step-details > summary {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ══════════════════════════════════════════════
+   Feature header — tags inline with title
+   ══════════════════════════════════════════════ */
+
 .feature-header {
-  border-bottom: 2px solid var(--md-primary-fg-color);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.feature-header .feature-description {
-  color: var(--md-default-fg-color--light);
-  font-style: italic;
-  margin-top: 0.5rem;
+.feature-header h1 {
+  margin-bottom: 0.1rem;
 }
 
-/* ── Tags ── */
+.feature-tags {
+  margin: 0 0 0.4rem 0;
+  font-family: var(--md-code-font-family);
+  font-size: 0.78rem;
+  color: #2e7d32;
+}
+
+.feature-description {
+  margin-bottom: 0.75rem;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
 .tag {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: 1rem;
-  margin-right: 0.3rem;
-  margin-bottom: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.75rem;
+  margin-right: 0.2rem;
   font-family: var(--md-code-font-family);
+  vertical-align: middle;
 }
 
 .tag-layer     { background: var(--md-primary-fg-color); color: white; }
@@ -33,71 +116,110 @@
 .tag-category  { background: var(--md-accent-fg-color); color: white; }
 .tag-default   { background: var(--md-default-fg-color--lighter); color: var(--md-default-fg-color); }
 
-/* ── Scenario block ── */
-.scenario {
-  border-left: 4px solid var(--md-default-fg-color--lightest);
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
-  border-radius: 0 0.25rem 0.25rem 0;
-  background: var(--md-code-bg-color);
+/* ── Expand / Collapse all buttons ── */
+.toggle-buttons {
+  float: right;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
 }
 
-.scenario-passed {
-  border-left-color: #4caf50;
+.toggle-buttons button {
+  background: none;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.72rem;
+  font-family: var(--md-code-font-family);
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  margin-left: 0.3rem;
 }
 
-.scenario-failed {
-  border-left-color: #f44336;
+.toggle-buttons button:hover {
+  color: var(--md-primary-fg-color);
+  border-color: var(--md-primary-fg-color);
 }
 
-.scenario-skipped {
-  border-left-color: #ff9800;
+/* ══════════════════════════════════════════════
+   Scenario — flush left, tags right-aligned
+   ══════════════════════════════════════════════ */
+
+.md-typeset details.scenario-details > summary {
+  width: 100% !important;
+  gap: 0.3rem !important;
+  font-size: 0.9rem !important;
 }
 
-.scenario-no-results {
-  border-left-color: var(--md-default-fg-color--lightest);
+/* Scenario text color by test status */
+.md-typeset details.scenario-no-results > summary {
+  color: var(--md-default-fg-color--light) !important;
+}
+.md-typeset details.scenario-passed > summary {
+  color: var(--md-default-fg-color) !important;
+}
+.md-typeset details.scenario-failed > summary {
+  color: #c62828 !important;
+  text-decoration: line-through;
+  text-decoration-color: rgba(198, 40, 40, 0.4);
 }
 
-.scenario-title {
+.md-typeset details.scenario-details > summary:hover {
+  color: var(--md-primary-fg-color) !important;
+}
+
+.md-typeset details.scenario-details > summary strong {
   font-weight: 600;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.scenario-title .status-icon {
   font-size: 0.9rem;
 }
 
-/* ── Steps ── */
-.step {
-  font-family: var(--md-code-font-family);
-  font-size: 0.85rem;
-  padding: 0.3rem 0.6rem;
-  margin: 0.15rem 0;
-  border-radius: 0.2rem;
-  line-height: 1.6;
+.scenario-tags {
+  margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding-left: 0.5rem;
 }
 
-.step-passed {
-  background: rgba(76, 175, 80, 0.08);
+.scenario-tags code {
+  font-size: 0.6rem;
+  padding: 0.05rem 0.3rem;
+  vertical-align: middle;
 }
 
-.step-failed {
-  background: rgba(244, 67, 54, 0.1);
-  text-decoration: line-through;
-  text-decoration-color: rgba(244, 67, 54, 0.5);
+/* ══════════════════════════════════════════════
+   Steps — indented under scenario
+   ══════════════════════════════════════════════ */
+
+.scenario-steps {
+  padding: 0 0 0.15rem 1.5rem !important;
 }
 
-.step-skipped {
-  background: rgba(255, 152, 0, 0.08);
-  opacity: 0.7;
+.md-typeset details.step-details > summary {
+  gap: 0.2rem !important;
+  font-family: var(--md-code-font-family) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.5 !important;
+  align-items: flex-start !important;
 }
 
-.step-no-results {
-  background: transparent;
-  opacity: 0.85;
+.step-keyword {
+  flex-shrink: 0;
+}
+
+/* Step text color by test status */
+.md-typeset details.step-no-results > summary {
+  color: var(--md-default-fg-color--light) !important;
+}
+.md-typeset details.step-passed > summary {
+  color: var(--md-default-fg-color) !important;
+}
+.md-typeset details.step-failed > summary {
+  color: #c62828 !important;
+  text-decoration: line-through !important;
+  text-decoration-color: rgba(198, 40, 40, 0.4) !important;
+}
+
+.md-typeset details.step-details > summary:hover {
+  color: var(--md-primary-fg-color) !important;
 }
 
 .step-keyword {
@@ -106,40 +228,112 @@
 }
 
 .step-duration {
-  float: right;
-  font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
+  margin-left: auto;
+  font-size: 0.68rem;
+  color: var(--md-default-fg-color--lighter);
+  flex-shrink: 0;
 }
 
-/* ── Error details (collapsible) ── */
-.step-error details {
-  margin-top: 0.3rem;
-  margin-bottom: 0.3rem;
+/* ══════════════════════════════════════════════
+   Step expanded body
+   ══════════════════════════════════════════════ */
+
+.step-body {
+  padding: 0.1rem 0 0.15rem 1.25rem;
+  font-size: 0.78rem;
 }
 
-.step-error details summary {
-  font-size: 0.8rem;
-  color: #f44336;
-  cursor: pointer;
+.step-result-label {
   font-family: var(--md-code-font-family);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.step-result-passed  { color: #4caf50; }
+.step-result-failed  { color: #f44336; }
+.step-result-skipped { color: #ff9800; }
+
+.step-result-duration {
+  font-family: var(--md-code-font-family);
+  font-size: 0.68rem;
+  color: var(--md-default-fg-color--lighter);
 }
 
-.step-error pre {
-  font-size: 0.75rem;
-  background: rgba(244, 67, 54, 0.05);
-  border: 1px solid rgba(244, 67, 54, 0.2);
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  overflow-x: auto;
+.step-error-detail pre {
+  font-size: 0.73rem;
+  font-family: var(--md-code-font-family);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.1rem 0;
   white-space: pre-wrap;
   word-break: break-word;
+  color: #c62828;
+  margin: 0;
 }
 
-/* ── Summary badges ── */
+.step-no-output {
+  color: var(--md-default-fg-color--lighter);
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+.step-docstring pre {
+  font-family: var(--md-code-font-family);
+  font-size: 0.76rem;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.1rem 0;
+  white-space: pre-wrap;
+  color: var(--md-default-fg-color--light);
+  margin: 0;
+}
+
+.step-datatable table {
+  border-collapse: collapse;
+  margin-top: 0.1rem;
+}
+
+.step-datatable td, .step-datatable th {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  font-family: var(--md-code-font-family);
+  font-size: 0.76rem;
+}
+
+/* ══════════════════════════════════════════════
+   Background block — same size, flush left
+   ══════════════════════════════════════════════ */
+
+.background-block {
+  margin-bottom: 0.4rem;
+}
+
+.background-block strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.background-steps {
+  padding: 0;
+}
+
+.background-steps .step-line {
+  font-family: var(--md-code-font-family);
+  font-size: 0.82rem;
+  padding: 0.05rem 0;
+  line-height: 1.5;
+  color: var(--md-default-fg-color);
+}
+
+/* ══════════════════════════════════════════════
+   Summary badges (index page)
+   ══════════════════════════════════════════════ */
+
 .summary-bar {
   display: flex;
-  gap: 0.75rem;
-  margin: 1rem 0;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
   flex-wrap: wrap;
 }
 
@@ -147,42 +341,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.3rem 0.75rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 1rem;
 }
 
-.summary-passed  { background: rgba(76, 175, 80, 0.12); color: #2e7d32; }
-.summary-failed  { background: rgba(244, 67, 54, 0.12); color: #c62828; }
-.summary-skipped { background: rgba(255, 152, 0, 0.12); color: #e65100; }
+.summary-passed  { background: rgba(76, 175, 80, 0.1); color: #2e7d32; }
+.summary-failed  { background: rgba(244, 67, 54, 0.1); color: #c62828; }
+.summary-skipped { background: rgba(255, 152, 0, 0.1); color: #e65100; }
 .summary-total   { background: var(--md-default-fg-color--lightest); color: var(--md-default-fg-color); }
-
-/* ── DocString rendering ── */
-.step-docstring {
-  font-family: var(--md-code-font-family);
-  font-size: 0.8rem;
-  background: var(--md-code-bg-color);
-  border-left: 3px solid var(--md-default-fg-color--lightest);
-  padding: 0.4rem 0.8rem;
-  margin: 0.2rem 0 0.2rem 1.5rem;
-  white-space: pre-wrap;
-  color: var(--md-default-fg-color--light);
-}
-
-/* ── Data table rendering ── */
-.step-datatable {
-  margin: 0.2rem 0 0.2rem 1.5rem;
-  font-size: 0.8rem;
-}
-
-.step-datatable table {
-  border-collapse: collapse;
-}
-
-.step-datatable td, .step-datatable th {
-  padding: 0.2rem 0.6rem;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  font-family: var(--md-code-font-family);
-  font-size: 0.8rem;
-}
