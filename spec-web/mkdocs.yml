@@ -40,9 +40,6 @@ theme:
 extra_css:
   - stylesheets/living-docs.css
 
-extra_javascript:
-  - javascripts/breadcrumb-nav.js
-
 markdown_extensions:
   - admonition
   - pymdownx.details

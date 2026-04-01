@@ -544,7 +544,7 @@ def generate_tag_pages(
 
         for feat_name, items in by_feature.items():
             link = items[0][1]  # all point to same feature page
-            md += f"### [{feat_name}](../{link})\n\n"
+            md += f"### [Feature: {feat_name}](../{link})\n\n"
             for scen_name, _, entry_type in items:
                 if entry_type == "scenario" and scen_name:
                     md += f"- Scenario: {scen_name}\n"
@@ -627,10 +627,6 @@ def main():
     if css_src.exists():
         shutil.copy(css_src, output_dir / "stylesheets" / "living-docs.css")
 
-    (output_dir / "javascripts").mkdir(exist_ok=True)
-    js_src = Path("spec-web/overrides/javascripts/breadcrumb-nav.js")
-    if js_src.exists():
-        shutil.copy(js_src, output_dir / "javascripts" / "breadcrumb-nav.js")
 
     # Load cucumber results
     cucumber_results = load_cucumber_results(report_path)
