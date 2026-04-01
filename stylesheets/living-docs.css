@@ -157,6 +157,52 @@
 }
 
 /* ══════════════════════════════════════════════
+   Design references / mockup gallery
+   ══════════════════════════════════════════════ */
+
+.design-references {
+  margin-bottom: 1.5rem;
+}
+
+.design-references > p > strong {
+  font-size: 0.9rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.design-gallery {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.design-figure {
+  margin: 0;
+  flex: 0 1 auto;
+  max-width: 320px;
+}
+
+.design-figure img {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.3rem;
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.design-figure img:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.design-figure figcaption {
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+/* ══════════════════════════════════════════════
    Scenario — flush left, tags right-aligned
    ══════════════════════════════════════════════ */
 
