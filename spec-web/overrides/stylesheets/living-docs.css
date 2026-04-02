@@ -115,8 +115,8 @@
 .tag-priority  { background: #6d4c9f; color: white; }
 .tag-category  { background: var(--md-accent-fg-color); color: white; }
 .tag-default   { background: var(--md-default-fg-color--lighter); color: var(--md-default-fg-color); }
-.tag-github    { background: #24292e; color: white; text-decoration: none; cursor: pointer; }
-.tag-github:hover { background: #444d56; text-decoration: underline; }
+.md-typeset a.tag-github { background: none !important; text-decoration: underline !important; }
+.md-typeset a.tag-github:hover { opacity: 0.7; }
 
 /* ── Clickable tag links ── */
 .tag-link {
