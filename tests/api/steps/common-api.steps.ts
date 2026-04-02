@@ -21,6 +21,10 @@ function resolvePath(path: string): string {
   });
 }
 
+function resolveField(obj: any, path: string): any {
+  return path.split('.').reduce((acc, key) => acc?.[key], obj);
+}
+
 // ── Given ──
 
 Given(
@@ -102,7 +106,12 @@ Then('the response body should contain {string}', async ({}, field: string) => {
 });
 
 Then('the response body {string} should equal {string}', async ({}, field: string, expected: string) => {
-  expect(String(lastResponse.body[field])).toBe(expected);
+  expect(String(resolveField(lastResponse.body, field))).toBe(expected);
+});
+
+Then('the response body {string} should not contain {string}', async ({}, field: string, substring: string) => {
+  const value = String(resolveField(lastResponse.body, field));
+  expect(value).not.toContain(substring);
 });
 
 Then('the response error code should be {string}', async ({}, expectedCode: string) => {

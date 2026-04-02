@@ -44,7 +44,7 @@ Every feature file MUST have these tags on the `Feature` line:
 |-----|----------|--------|---------|
 | Layer | Yes | `@acceptance`, `@api`, `@integration`, `@prompt-eval` | Identifies which project runs it |
 | Priority | Yes | `@P0` (critical), `@P1` (high), `@P2` (medium) | Filters for release gates |
-| Story | Yes (if linked) | `@story-{N}` (e.g., `@story-42`) | Links feature to GitHub Issue #N. CI uses this to auto-update issue status. Created by `/create-story` skill. |
+| Story | Yes (if linked) | `@github:owner/repo/issues/N` (e.g., `@github:AgentifyHQ/atdd-bmad-template/issues/42`) | Links feature to GitHub Issue. CI uses this to auto-update issue status. Living docs renders as clickable link. Created by `/create-story` skill. |
 
 ## Optional Tags (on Scenario level)
 

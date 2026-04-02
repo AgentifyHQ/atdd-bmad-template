@@ -94,10 +94,10 @@ def parse_story_results(report_path: Path) -> dict[int, StoryResult]:
 
 
 def _extract_story_ids(tags: set[str]) -> list[int]:
-    """Extract story IDs from @story-N tags."""
+    """Extract issue numbers from @github:owner/repo/issues/N tags."""
     ids = []
     for tag in tags:
-        match = re.match(r"@story-(\d+)", tag)
+        match = re.match(r"@github:.+/issues/(\d+)", tag)
         if match:
             ids.append(int(match.group(1)))
     return ids
@@ -299,7 +299,7 @@ def main():
     parser.add_argument("--report", default="reports/cucumber/report.json")
     parser.add_argument("--repo", default=None, help="owner/repo (auto-detected if in git repo)")
     parser.add_argument("--org", default="AgentifyHQ")
-    parser.add_argument("--project", type=int, default=3, help="GitHub Project number")
+    parser.add_argument("--project", type=int, default=5, help="GitHub Project number (story board)")
     parser.add_argument("--dry-run", action="store_true", help="Print what would happen without making changes")
     args = parser.parse_args()
 
@@ -323,7 +323,7 @@ def main():
     # Parse results
     stories = parse_story_results(Path(args.report))
     if not stories:
-        print("No @story-N tags found in test results.")
+        print("No @github:*/issues/* tags found in test results.")
         return
 
     print(f"Found {len(stories)} stories with test results:")

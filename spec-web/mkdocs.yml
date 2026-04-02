@@ -65,6 +65,8 @@ nav:
           - User Login Visual: acceptance/user-management/user-login-visual.md
           - User Login: acceptance/user-management/user-login.md
   - Api:
+      - Interrupt Management:
+          - Content Validation: api/interrupt-management/content-validation.md
       - User Management:
           - User Crud: api/user-management/user-crud.md
   - Integration:

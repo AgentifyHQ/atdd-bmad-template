@@ -123,7 +123,7 @@ def parse_feature_file(path: Path) -> Feature:
 
         # Tags
         if stripped.startswith("@"):
-            pending_tags.extend(re.findall(r"@[\w-]+", stripped))
+            pending_tags.extend(re.findall(r"@[\w:/.#-]+", stripped))
             i += 1
             continue
 
@@ -251,8 +251,24 @@ def merge_results(feature: Feature, elements: list[dict]) -> None:
 # Markdown generators
 # ──────────────────────────────────────────────
 
+def _parse_github_tag(tag: str) -> tuple[str, str] | None:
+    """Parse @github:owner/repo/issues/N into (issue-label, url). Returns None if not a github tag."""
+    m = re.match(r"@github:(.+?)/(.+?)/issues/(\d+)$", tag)
+    if m:
+        owner, repo, number = m.group(1), m.group(2), m.group(3)
+        url = f"https://github.com/{owner}/{repo}/issues/{number}"
+        label = f"issue-{number}"
+        return label, url
+    return None
+
+
 def tag_html(tag: str) -> str:
-    """Render a tag as styled HTML span."""
+    """Render a tag as styled HTML span (or link for @github: tags)."""
+    github = _parse_github_tag(tag)
+    if github:
+        label, url = github
+        return f'<a href="{url}" class="tag tag-github" target="_blank" rel="noopener">@{label}</a>'
+
     layers = {"@acceptance", "@api", "@integration", "@prompt-eval"}
     priorities = {"@P0", "@P1", "@P2"}
 
@@ -457,9 +473,14 @@ def render_tests_tab(feature: Feature) -> str:
 
 
 def _tag_link(tag: str, depth: int = 2) -> str:
-    """Render a tag as a clickable link to the tag index page.
+    """Render a tag as a clickable link to the tag index page (or GitHub for @github: tags).
     depth = number of path segments in the page URL (mkdocs adds +1 for directory URLs).
     """
+    github = _parse_github_tag(tag)
+    if github:
+        label, url = github
+        return f'<a href="{url}" class="tag-link tag-github" target="_blank" rel="noopener">@{label}</a>'
+
     slug = tag.lstrip("@")
     prefix = "../" * (depth + 1)  # +1 because mkdocs serves page/index.html
     return f'<a href="{prefix}tags/{slug}/" class="tag-link">{tag}</a>'
@@ -609,6 +630,10 @@ def generate_tag_pages(
     tag_pages: dict[str, str] = {}
 
     for tag in sorted(tag_index.keys()):
+        # Skip @github: tags — they link to external GitHub issues, not internal pages
+        if tag.startswith("@github:"):
+            continue
+
         entries = tag_index[tag]
         slug = tag.lstrip("@")
         page_path = f"tags/{slug}.md"

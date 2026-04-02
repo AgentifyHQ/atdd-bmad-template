@@ -42,16 +42,21 @@ Feature files live in `features/{layer}/` — never in `tests/`.
 - **promptfoo YAML is for comparison and red-teaming only**, not quality gates. Quality gates live in feature files.
 - **Shared test data** lives in `tests/prompt-eval/promptfoo/datasets/`. Both TS and Python tests read from here.
 - **Placeholders exist** in LLM generation steps. Replace with actual API calls before running against real services.
-- **Every story needs `@story-N` tag.** Links feature files to GitHub Issues. Created via `/create-story` skill.
+- **Every story needs `@github:owner/repo/issues/N` tag.** Links feature files to GitHub Issues. Created via `/create-story` skill.
 - **Never create a feature file without a GitHub Issue**, and vice versa. They are an atomic pair.
 - **Story status updates are automatic.** CI reads cucumber JSON, updates issue labels + project board. No manual intervention needed.
 
 ## Story Workflow
 
 Use `/create-story` to create a new story. It generates:
-1. GitHub Issue (body = BMM story spec)
-2. Feature file (tagged `@story-{issue-number}`)
-3. Project board entry (in "Speccing" column)
+1. GitHub Issue in **atdd-bmad-template** (body = story spec, labels: `story`, priority, epic)
+2. Feature file (tagged `@github:AgentifyHQ/atdd-bmad-template/issues/{N}`)
+3. Repo project board entry (auto-creates board if none exists)
+
+**Epic label format:** `{source-repo}::{domain}::{layer-abbrev}` — e.g., `agent-hitl-gateway::interrupt-management::api`
+- Layer abbreviations: `acceptance` → `acc`, `api` → `api`, `integration` → `int`, `prompt-eval` → `pe`
+
+**Project boards** are per-repo (not org-level). Board is auto-created if missing.
 
 After tests run, CI automatically:
 - Labels issues `tests-passing` or `tests-failing`
