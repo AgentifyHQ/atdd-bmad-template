@@ -82,6 +82,26 @@ Living docs site tooling lives in `spec-web/`.
 > After deploying, GitHub Pages CDN may serve cached pages for a few minutes.
 > Use **Cmd+Shift+R** (Mac) or **Ctrl+Shift+R** (Windows/Linux) to hard refresh.
 
+## Playwright Configuration
+
+Key settings in `playwright.config.ts`:
+
+| Setting | Default | Options |
+|---------|---------|---------|
+| `screenshot` | `'only-on-failure'` | `'on'` (every test), `'only-on-failure'`, `'off'` |
+| `trace` | `'on-first-retry'` | `'on'` (every test), `'on-first-retry'`, `'off'` |
+| `video` | `'off'` | `'on'` (every test), `'on-first-retry'`, `'off'` |
+
+Screenshots, traces, and videos are saved to `reports/test-results/`. To change, edit the `use` block in `playwright.config.ts`:
+
+```typescript
+use: {
+  screenshot: 'only-on-failure',  // captures screenshot when a test fails
+  trace: 'on-first-retry',        // captures trace on retry (open with: npx playwright show-trace)
+  video: 'off',                   // set to 'on-first-retry' to record video of failures
+}
+```
+
 ## Design References
 
 Drop Figma exports or mockup images into an `assets/` folder next to feature files:
