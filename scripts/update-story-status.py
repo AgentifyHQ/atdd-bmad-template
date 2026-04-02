@@ -261,6 +261,25 @@ def _get_status_option_id(org: str, project_number: int, status_name: str) -> st
     return None
 
 
+def _find_project_by_title(org: str, title: str) -> int | None:
+    """Find a ProjectV2 number by title."""
+    result = _gh_graphql("""
+        query($org: String!) {
+          organization(login: $org) {
+            projectsV2(first: 20) {
+              nodes { number title }
+            }
+          }
+        }
+    """, org=org)
+    nodes = (result.get("data", {}).get("organization", {})
+             .get("projectsV2", {}).get("nodes", []))
+    for node in nodes:
+        if node.get("title") == title:
+            return node["number"]
+    return None
+
+
 def _gh(args: list[str], ignore_errors: bool = False) -> str:
     """Run gh CLI command."""
     try:
@@ -299,7 +318,7 @@ def main():
     parser.add_argument("--report", default="reports/cucumber/report.json")
     parser.add_argument("--repo", default=None, help="owner/repo (auto-detected if in git repo)")
     parser.add_argument("--org", default="AgentifyHQ")
-    parser.add_argument("--project", type=int, default=5, help="GitHub Project number (story board)")
+    parser.add_argument("--project", type=int, default=None, help="GitHub Project number (auto-detected as '{repo-name} Sprints')")
     parser.add_argument("--dry-run", action="store_true", help="Print what would happen without making changes")
     args = parser.parse_args()
 
@@ -316,8 +335,18 @@ def main():
             print("Could not detect repo. Use --repo owner/name")
             sys.exit(1)
 
+    # Auto-detect project number ("{repo-name} Sprints")
+    project_number = args.project
+    if not project_number:
+        repo_name = repo.split("/")[-1]
+        expected_title = f"{repo_name} Sprints"
+        project_number = _find_project_by_title(args.org, expected_title)
+        if not project_number:
+            print(f"Could not find project '{expected_title}'. Use --project N")
+            sys.exit(1)
+
     print(f"Updating story status from: {args.report}")
-    print(f"Repo: {repo} | Project: #{args.project} | Dry run: {args.dry_run}")
+    print(f"Repo: {repo} | Project: #{project_number} | Dry run: {args.dry_run}")
     print()
 
     # Parse results
@@ -337,7 +366,7 @@ def main():
     # Update issues
     for story_id, result in sorted(stories.items()):
         update_issue_labels(result, repo, dry_run=args.dry_run)
-        update_project_status(result, repo, args.org, args.project, dry_run=args.dry_run)
+        update_project_status(result, repo, args.org, project_number, dry_run=args.dry_run)
 
     print("\nDone.")
 

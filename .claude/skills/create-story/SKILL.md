@@ -90,53 +90,30 @@ Check existing steps before creating new ones:
 
 Only create new step files for genuinely new step patterns.
 
-### 6. Add Issue to Story Board
+### 6. Add Issue to Sprints Board
 
-Add issue to the **repo story board** (project #5 — "atdd-bmad-template Stories"):
+Find the repo's Sprints board (titled "{repo-name} Sprints") and add the issue. If it doesn't exist, create one. Read `.claude/conventions/project-management.md` for board discovery queries.
 
-```bash
-gh project item-add 5 --owner AgentifyHQ \
-  --url https://github.com/AgentifyHQ/atdd-bmad-template/issues/{issue-number}
-```
+### 7. Handle Epic on Epic Board
 
-If the story board doesn't exist, create one:
-
-```bash
-gh api graphql -f query='mutation { createProjectV2(input: {
-  ownerId: "{org-node-id}" title: "atdd-bmad-template Stories"
-  repositoryId: "{repo-node-id}"
-}) { projectV2 { id number url } } }'
-```
-
-### 7. Ensure Epic Exists on Epic Board
-
-The **org Epic Board** (project #4) tracks epics, not stories. Check if an epic entry for this domain exists; if not, add a draft issue:
-
-```bash
-# Add epic as draft issue on Epic Board (project #4)
-gh api graphql -f query='mutation { addProjectV2DraftIssue(input: {
-  projectId: "PVT_kwDOEBTe684BTfAQ"
-  title: "{source-repo}::{domain}::{layer-abbrev}"
-  body: "Epic: {description}\n\nFeature files:\n- features/{layer}/{domain}/{file}.feature"
-}) { projectItem { id } } }'
-```
-
-Skip this step if the epic already exists on the board.
+Find the org Epic Board (titled "Epic Board"). Read `.claude/conventions/project-management.md` for the full epic lifecycle:
+- If a matching draft epic exists in Speccing/Backlog → convert to real issue, move to "In Progress"
+- If no epic exists → create a draft
+- Add story link to the epic's story table
 
 ### 8. Verify
 
 1. Run `npx bddgen` — confirm feature file parses
-2. Run `gh issue view {number} -R AgentifyHQ/atdd-bmad-template` — confirm issue
-3. Report: issue URL, feature file path, epic label, story board status
+2. Run `gh issue view {number}` — confirm issue exists
+3. Report: issue URL, feature file path, epic status
 
 ## Rules
 
-- Issues live in **atdd-bmad-template** (test repo), never in source code repos
-- **Two boards:** org Epic Board (#4) for epics, repo Story Board (#5) for stories
-- Epic label format: `{source-repo}::{domain}::{layer-abbrev}`
-- Auto-create story board if none exists
-- Read convention files before generating any feature file
-- Always include `@github:AgentifyHQ/atdd-bmad-template/issues/{N}` tag — this links tests to issues
+- Read `.claude/conventions/project-management.md` for board operations
+- Read `.claude/conventions/feature-file-standards.md` before generating features
 - Never create a feature file without a GitHub Issue, or vice versa
+- Always include `@github:{owner}/{repo}/issues/{N}` tag
+- Epic label format: `{source-repo}::{domain}::{layer-abbrev}`
+- Discover board numbers dynamically — never hardcode them
 - Issue body IS the story spec — keep it as source of truth
 - Reuse existing step definitions; only add new ones for new patterns
