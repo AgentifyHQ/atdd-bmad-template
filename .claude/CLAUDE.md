@@ -46,21 +46,34 @@ Feature files live in `features/{layer}/` — never in `tests/`.
 - **Never create a feature file without a GitHub Issue**, and vice versa. They are an atomic pair.
 - **Story status updates are automatic.** CI reads cucumber JSON, updates issue labels + project board. No manual intervention needed.
 
-## Story Workflow
+## Project Management
+
+### Two Boards
+
+| Board | Scope | Columns | Items |
+|-------|-------|---------|-------|
+| **Epic Board** (org #4) | Cross-repo | Backlog → Speccing → In Progress → Done | Epic issues/drafts |
+| **Story Board** (repo #5) | atdd-bmad-template | Todo → In Progress → Done | Story issues |
+
+### Epic Lifecycle
+
+1. **Backlog/Speccing** — drafts on Epic Board. Created manually or by BMAD workflows.
+2. **`/create-story`** — finds matching draft epic, converts to real issue in source repo, moves to "In Progress", populates body with spec + story table.
+3. **CI** — updates story table in epic body, moves epic to "Done" when all stories pass.
+
+**Epic naming:** `{source-repo}::{domain}::{layer-abbrev}` (e.g., `agent-hitl-gateway::interrupt-management::api`)
+
+### Story Workflow
 
 Use `/create-story` to create a new story. It generates:
 1. GitHub Issue in **atdd-bmad-template** (body = story spec, labels: `story`, priority, epic)
 2. Feature file (tagged `@github:AgentifyHQ/atdd-bmad-template/issues/{N}`)
-3. Repo project board entry (auto-creates board if none exists)
-
-**Epic label format:** `{source-repo}::{domain}::{layer-abbrev}` — e.g., `agent-hitl-gateway::interrupt-management::api`
-- Layer abbreviations: `acceptance` → `acc`, `api` → `api`, `integration` → `int`, `prompt-eval` → `pe`
-
-**Project boards** are per-repo (not org-level). Board is auto-created if missing.
+3. Story Board entry + link in parent epic's story table
 
 After tests run, CI automatically:
-- Labels issues `tests-passing` or `tests-failing`
-- Moves project board column to "Done" or keeps "In Progress"
+- Labels story issues `tests-passing` or `tests-failing`
+- Updates story table in parent epic issue
+- Moves epic to "Done" when all linked stories pass
 
 ## Run Commands
 
