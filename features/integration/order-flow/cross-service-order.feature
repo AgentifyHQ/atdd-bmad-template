@@ -1,4 +1,4 @@
-@integration @P1
+@example @integration @P1
 Feature: Cross-Service Order Flow
   As a system
   I want orders to propagate correctly across user, order, and inventory services

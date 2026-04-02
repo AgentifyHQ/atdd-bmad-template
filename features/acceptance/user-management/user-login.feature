@@ -1,4 +1,4 @@
-@acceptance @P0
+@example @acceptance @P0
 Feature: User Login Journey
   As a registered user
   I want to log in to the application

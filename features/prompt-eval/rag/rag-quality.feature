@@ -1,4 +1,4 @@
-@prompt-eval @rag @P0
+@example @prompt-eval @rag @P0
 Feature: RAG Pipeline Quality
   As a system owner
   I want the RAG pipeline to retrieve relevant context and generate grounded answers

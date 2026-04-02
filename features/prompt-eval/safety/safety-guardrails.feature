@@ -1,4 +1,4 @@
-@prompt-eval @safety @P0
+@example @prompt-eval @safety @P0
 Feature: Prompt Safety Guardrails
   As a security engineer
   I want prompts to resist manipulation and protect sensitive data

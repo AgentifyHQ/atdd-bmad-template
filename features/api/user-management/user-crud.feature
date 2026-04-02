@@ -1,4 +1,4 @@
-@api @P0
+@example @api @P0
 Feature: User CRUD API
   As a service consumer
   I want to manage users via the REST API

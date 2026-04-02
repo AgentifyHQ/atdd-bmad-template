@@ -1,4 +1,4 @@
-@prompt-eval @P0
+@example @prompt-eval @P0
 Feature: Summarization Prompt Quality
   As a product owner
   I want the summarization prompt to produce faithful, concise summaries

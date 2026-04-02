@@ -65,12 +65,13 @@ After tests run, CI automatically:
 ## Run Commands
 
 ```bash
-npm run test:acceptance          # UI BDD
-npm run test:api                 # API BDD
-npm run test:integration         # Integration BDD
-npm run test:prompt-eval         # Prompt eval BDD (TS/promptfoo)
+npm run test:acceptance          # UI BDD (excludes @example)
+npm run test:api                 # API BDD (excludes @example)
+npm run test:integration         # Integration BDD (excludes @example)
+npm run test:prompt-eval         # Prompt eval BDD (TS/promptfoo, excludes @example)
 npm run test:prompt-eval:python  # Prompt eval BDD (Python/DeepEval/Ragas)
 npm run test:prompt-eval:all     # Both prompt eval runners
+npm run test:examples            # Run only @example template tests
 npm run prompt:compare           # Side-by-side prompt comparison (standalone)
 npm run prompt:redteam           # Security red-teaming (standalone)
 npm run report:cucumber          # Cucumber report (reports/cucumber/)

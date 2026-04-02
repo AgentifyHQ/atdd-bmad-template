@@ -1,4 +1,4 @@
-@acceptance @visual @P1
+@example @acceptance @visual @P1
 Feature: User Login Visual Regression
   As a designer
   I want the login page to maintain its visual appearance

@@ -60,6 +60,7 @@ Every feature file MUST have these tags on the `Feature` line:
 | `@rag` | Prompt eval: RAG pipeline metrics |
 | `@safety` | Prompt eval: banned patterns, guardrails |
 | `@wip` | Work in progress — excluded from CI |
+| `@example` | Template example — excluded from `npm test` by default, run with `npm run test:examples` |
 
 ## Writing Rules
 
