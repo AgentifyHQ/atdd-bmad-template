@@ -26,6 +26,22 @@ npm run docs:serve                     # Living docs at http://127.0.0.1:8000
 
 All layers use Gherkin feature files as the single source of truth. Template examples are tagged `@example` and excluded from `npm test` by default.
 
+## Debugging Failures
+
+When tests fail, use the `/probe-test-failures` skill in Claude Code to diagnose root causes. It opens the Playwright report and the live app side-by-side in Chrome, cross-references error messages with actual DOM state, and categorizes each failure as a test bug, app bug, environment issue, or flake.
+
+```bash
+# 1. Serve the Playwright report
+npx playwright show-report reports/playwright --port 9323
+
+# 2. Make sure the app under test is running
+
+# 3. In Claude Code, run:
+/probe-test-failures http://localhost:9323 http://localhost:3000
+```
+
+Requires the [Claude in Chrome](https://chromewebstore.google.com/detail/claude-in-chrome) MCP extension.
+
 ## Documentation
 
 | Guide | Description |
