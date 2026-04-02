@@ -44,6 +44,7 @@ Every feature file MUST have these tags on the `Feature` line:
 |-----|----------|--------|---------|
 | Layer | Yes | `@acceptance`, `@api`, `@integration`, `@prompt-eval` | Identifies which project runs it |
 | Priority | Yes | `@P0` (critical), `@P1` (high), `@P2` (medium) | Filters for release gates |
+| Story | Yes (if linked) | `@story-{N}` (e.g., `@story-42`) | Links feature to GitHub Issue #N. CI uses this to auto-update issue status. Created by `/create-story` skill. |
 
 ## Optional Tags (on Scenario level)
 
