@@ -36,3 +36,4 @@ All layers use Gherkin feature files as the single source of truth. Template exa
 | [BDD Guide](docs/bdd-guide.md) | Writing feature files, step definitions, and tagging |
 | [Prompt Evaluation Guide](docs/prompt-eval-guide.md) | BDD prompt eval, promptfoo, DeepEval, Ragas |
 | [CI/CD Integration](docs/ci-integration.md) | Pipeline setup and quality gates |
+| [Contract Testing (Pact)](docs/contract-testing.md) | Service-to-service contract testing — lives in code repos, not here |
