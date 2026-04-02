@@ -672,13 +672,20 @@ def build_nav(features: list[tuple[Path, Feature]], tag_pages: dict[str, str] | 
         filename = parts[-1].replace(".feature", "")
         page_path = str(rel_path.with_suffix(".md"))
 
+        # Add status indicator to nav title
+        title = _title(filename)
+        if feature.failed_count > 0:
+            title = f"\u274C {title}"
+        elif feature.passed_count > 0 and feature.failed_count == 0:
+            title = f"\u2705 {title}"
+
         tree.setdefault(layer, {})
         if domain:
             tree[layer].setdefault(domain, [])
-            tree[layer][domain].append({_title(filename): page_path})
+            tree[layer][domain].append({title: page_path})
         else:
             tree[layer].setdefault("_pages", [])
-            tree[layer]["_pages"].append({_title(filename): page_path})
+            tree[layer]["_pages"].append({title: page_path})
 
     nav = [{"Home": "index.md"}]
     for layer in sorted(tree.keys()):
@@ -742,6 +749,10 @@ def main():
         rel_path = feature_path.relative_to(features_dir)
         feature = parse_feature_file(feature_path)
         feature.uri = str(feature_path)
+
+        # Skip @example features — template demos, not real specs
+        if "@example" in feature.tags:
+            continue
 
         # Merge test results if available
         for uri_key, elements in cucumber_results.items():
