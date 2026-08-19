@@ -1,0 +1,49 @@
+# GPM Configuration — Project Repo
+# Registered on hub board: AgentifyHQ/dev-hub-project project #10
+
+gh_org: AgentifyHQ
+hub_repo: dev-hub-project
+default_branch: main
+
+hub:
+  project_number: 10
+  project_node_id: "PVT_kwDOEBTe684BTm_N"
+  status_field_id: "PVTSSF_lADOEBTe684BTm_NzhA01Yc"
+  status_options:
+    ideation: "1ca41300"
+    analysis: "537cd650"
+    planning: "fdd1e4f8"
+    solutioning: "64b6260c"
+    implementation: "d31dfe09"
+    done: "0205f797"
+  last_completed_field_id: "PVTSSF_lADOEBTe684BTm_NzhA01g4"
+  last_completed_options:
+    "1.1_brainstorm": "8497a2fe"
+    "1.2_domain_research": "1549195a"
+    "1.3_market_research": "646622fe"
+    "1.4_technical_research": "e65fdc30"
+    "1.5_product_brief": "45c5a79c"
+    "2.1_create_prd": "ba85da2a"
+    "2.2_validate_prd": "c410eeb3"
+    "2.3_edit_prd": "edc087eb"
+    "2.4_create_ux_design": "ec8b9707"
+    "3.1_create_architecture": "a6e9ceee"
+    "3.2_create_epics_and_stories": "25b975ce"
+    "3.3_test_design": "1e1b1dd4"
+    "3.4_test_framework": "7abb5751"
+    "3.5_ci_setup": "e31fd7f2"
+    "3.6_check_implementation_readiness": "8d362629"
+    "4.1_sprint_planning": "284d1d23"
+    "4.2_create_story": "b15ddc5a"
+    "4.3_validate_story": "6ad2fb42"
+    "4.4_atdd": "18421977"
+    "4.5_dev_story": "5e41b12f"
+    "4.6_code_review": "3a699285"
+    "4.7_test_automation": "b057ca98"
+    "4.8_test_review": "1084e4af"
+    "4.9_nfr_assessment": "9d97e2eb"
+    "4.10_traceability": "7971e969"
+    "4.11_retrospective": "0ad75bed"
+    "quick_dev": "bbadde59"
+
+card_issue_number: 4
